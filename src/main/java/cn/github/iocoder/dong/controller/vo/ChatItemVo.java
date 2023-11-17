@@ -1,7 +1,7 @@
 package cn.github.iocoder.dong.controller.vo;
 
 
-import cn.github.iocoder.dong.enums.ChatAnswerTypeEnum;
+import cn.github.iocoder.dong.model.enums.ChatAnswerTypeEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

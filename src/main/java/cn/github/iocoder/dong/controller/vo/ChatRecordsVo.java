@@ -1,6 +1,6 @@
 package cn.github.iocoder.dong.controller.vo;
 
-import cn.github.iocoder.dong.enums.AISourceEnum;
+import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
