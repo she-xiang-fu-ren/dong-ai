@@ -1,5 +1,6 @@
 package cn.github.iocoder.dong.context;
 
+import cn.github.iocoder.dong.entity.GptUser;
 import lombok.Data;
 
 import java.security.Principal;
@@ -7,7 +8,7 @@ import java.security.Principal;
 /**
  * 请求上下文，携带用户身份相关信息
  *
- * @author YiHui
+ * @author dong
  * @date 2022/7/6
  */
 public class ReqInfoContext {
@@ -28,33 +29,9 @@ public class ReqInfoContext {
     @Data
     public static class ReqInfo implements Principal {
         /**
-         * appKey
-         */
-        private String appKey;
-        /**
-         * 访问的域名
-         */
-        private String host;
-        /**
-         * 访问路径
-         */
-        private String path;
-        /**
          * 客户端ip
          */
         private String clientIp;
-        /**
-         * referer
-         */
-        private String referer;
-        /**
-         * post 表单参数
-         */
-        private String payload;
-        /**
-         * 设备信息
-         */
-        private String userAgent;
 
         /**
          * 登录的会话
@@ -65,13 +42,10 @@ public class ReqInfoContext {
          * 用户id
          */
         private Long userId;
-        /**
-         * 消息数量
-         */
-        private Integer msgNum;
 
+        private GptUser user;
 
-        private String deviceId;
+        private Boolean LoginOrNot = false;
 
         @Override
         public String getName() {

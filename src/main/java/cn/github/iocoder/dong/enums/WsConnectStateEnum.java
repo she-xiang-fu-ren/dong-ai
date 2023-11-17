@@ -3,8 +3,8 @@ package cn.github.iocoder.dong.enums;
 /**
  * websocket 连接 状态
  *
- * @author YiHui
- * @date 2023/6/12
+ * @author dong
+ * @date 2023/11/16
  */
 public enum WsConnectStateEnum {
     // 初始化

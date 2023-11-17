@@ -23,10 +23,10 @@ public class GptHistoryServiceImpl implements GptHistoryService {
      * @param item
      */
     @Override
-    public void pushChatItem(AISourceEnum source, String user, ChatItemVo item) {
+    public void pushChatItem(AISourceEnum source, Long user, ChatItemVo item) {
         GptHistory userAiHistoryDO = new GptHistory();
         userAiHistoryDO.setAiType(source.getName());
-        userAiHistoryDO.setIp(user);
+        userAiHistoryDO.setUserId(user);
         userAiHistoryDO.setQuestion(item.getQuestion());
         userAiHistoryDO.setAnswer(item.getAnswer());
         gptHistoryMapper.insert(userAiHistoryDO);

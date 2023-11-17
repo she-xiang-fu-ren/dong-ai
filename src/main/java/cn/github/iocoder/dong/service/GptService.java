@@ -32,7 +32,7 @@ public interface GptService {
      * @param question 聊天的问题
      * @return 返回的结果
      */
-    ChatRecordsVo chat(String user, String question);
+    ChatRecordsVo chat(Long user, String question);
 
     /**
      * 开始进入聊天
@@ -42,7 +42,7 @@ public interface GptService {
      * @param consumer 接收到AI返回之后可执行的回调
      * @return 同步直接返回的结果
      */
-    ChatRecordsVo chat(String user, String question, Consumer<ChatRecordsVo> consumer);
+    ChatRecordsVo chat(Long user, String question, Consumer<ChatRecordsVo> consumer);
 
     /**
      * 异步聊天
@@ -52,7 +52,7 @@ public interface GptService {
      * @param consumer 执行成功之后，直接异步回调的通知
      * @return 同步直接返回的结果
      */
-    ChatRecordsVo asyncChat(String user, String question, Consumer<ChatRecordsVo> consumer);
+    ChatRecordsVo asyncChat(Long user, String question, Consumer<ChatRecordsVo> consumer);
 
 
     /**
@@ -61,5 +61,5 @@ public interface GptService {
      * @param user
      * @return
      */
-    ChatRecordsVo getChatHistory(String user);
+    ChatRecordsVo getChatHistory(Long user,AISourceEnum source);
 }

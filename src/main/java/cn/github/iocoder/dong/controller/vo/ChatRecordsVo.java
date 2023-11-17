@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 /**
  * 聊天记录
  *
- * @author YiHui
- * @date 2023/6/9
+ * @author dong
+ * @date 2023/11/16
  */
 @Data
 @Accessors(chain = true)

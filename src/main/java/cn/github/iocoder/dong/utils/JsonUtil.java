@@ -3,7 +3,7 @@ package cn.github.iocoder.dong.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author YiHui
+ * @author dong
  * @date 2022/9/5
  */
 public class JsonUtil {

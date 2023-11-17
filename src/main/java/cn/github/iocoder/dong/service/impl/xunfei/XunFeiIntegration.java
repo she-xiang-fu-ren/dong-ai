@@ -4,7 +4,6 @@ import cn.github.iocoder.dong.context.AISourceThreadLocalContext;
 import cn.github.iocoder.dong.entity.GptClient;
 import cn.github.iocoder.dong.enums.AISourceEnum;
 import cn.github.iocoder.dong.mapper.GptClientMapper;
-import cn.github.iocoder.dong.service.GptService;
 import cn.github.iocoder.dong.utils.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.google.gson.JsonArray;
@@ -33,8 +32,8 @@ import java.util.*;
  *
  * <a href="https://www.xfyun.cn/doc/spark/Web.html#_1-%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E"/>
  *
- * @author YiHui
- * @date 2023/6/12
+ * @author dong
+ * @date 2023/11/16
  */
 @Slf4j
 @Setter

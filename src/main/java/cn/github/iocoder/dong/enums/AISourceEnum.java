@@ -3,8 +3,8 @@ package cn.github.iocoder.dong.enums;
 import lombok.Getter;
 
 /**
- * @author YiHui
- * @date 2023/6/9
+ * @author dong
+ * @date 2023/11/16
  */
 @Getter
 public enum AISourceEnum {

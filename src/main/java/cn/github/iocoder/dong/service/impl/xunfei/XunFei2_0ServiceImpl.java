@@ -36,7 +36,7 @@ public class XunFei2_0ServiceImpl extends AbstractGptService {
      * @return 返回的会话状态，控制是否需要将结果直接返回给前端
      */
     @Override
-    public AiChatStatEnum doAsyncAnswer(String user, ChatRecordsVo response, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
+    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo response, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
         return xunFeiService.doAsyncAnswer(user,response,consumer);
     }
 
@@ -48,7 +48,7 @@ public class XunFei2_0ServiceImpl extends AbstractGptService {
      * @return true 表示正确回答了； false 表示回答出现异常
      */
     @Override
-    public AiChatStatEnum doAnswer(String user, ChatItemVo chat) {
+    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat) {
         return xunFeiService.doAnswer(user,chat);
     }
 }

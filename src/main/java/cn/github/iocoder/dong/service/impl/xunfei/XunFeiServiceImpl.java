@@ -32,7 +32,7 @@ public class XunFeiServiceImpl {
      * @param chat
      * @return
      */
-    public AiChatStatEnum doAnswer(String user, ChatItemVo chat) {
+    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat) {
         return AiChatStatEnum.IGNORE;
     }
 
@@ -43,8 +43,8 @@ public class XunFeiServiceImpl {
      * @param chatRes  保存提问 & 返回的结果，最终会返回给前端用户
      * @param consumer 具体将 response 写回前端的实现策略
      */
-    public AiChatStatEnum doAsyncAnswer(String user, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
-        XunFeiChatWrapper chat = new XunFeiChatWrapper(user, chatRes, consumer);
+    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
+        XunFeiChatWrapper chat = new XunFeiChatWrapper(String.valueOf(user), chatRes, consumer);
         chat.initAndQuestion();
         return AiChatStatEnum.IGNORE;
     }

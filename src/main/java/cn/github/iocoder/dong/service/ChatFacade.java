@@ -16,8 +16,8 @@ import java.util.function.Consumer;
 /**
  * 聊天的门面类
  *
- * @author YiHui
- * @date 2023/6/9
+ * @author dong
+ * @date 2023/11/16
  */
 @Slf4j
 @Service
@@ -26,18 +26,6 @@ public class ChatFacade {
     @Resource
     private GptServiceFactory gptServiceFactory;
 
-
-    /**
-     * 高度封装的AI聊天访问入口，对于使用这而言，只需要提问，定义接收返回结果的回调即可
-     *
-     * @param question 提出的问题
-     * @param callback 定义异步聊天接口返回时的回调策略
-     * @return 表示同步直接返回的结果
-     */
-    public ChatRecordsVo autoChat(Integer code,String question, Consumer<ChatRecordsVo> callback) {
-        AISourceEnum source = getRecommendAiSource(code);
-        return autoChat(source, question, callback);
-    }
 
 
     /**
@@ -64,7 +52,7 @@ public class ChatFacade {
      * @return
      */
     public ChatRecordsVo chat(AISourceEnum source, String question) {
-        return gptServiceFactory.getChatService(source).chat(ReqInfoContext.getReqInfo().getClientIp(), question);
+        return gptServiceFactory.getChatService(source).chat(ReqInfoContext.getReqInfo().getUserId(), question);
     }
 
     /**
@@ -76,7 +64,7 @@ public class ChatFacade {
      */
     public ChatRecordsVo chat(AISourceEnum source, String question, Consumer<ChatRecordsVo> callback) {
         return gptServiceFactory.getChatService(source)
-                .chat(ReqInfoContext.getReqInfo().getClientIp(), question, callback);
+                .chat(ReqInfoContext.getReqInfo().getUserId(), question, callback);
     }
 
     /**
@@ -87,18 +75,8 @@ public class ChatFacade {
      */
     public ChatRecordsVo asyncChat(AISourceEnum source, String question, Consumer<ChatRecordsVo> callback) {
         return gptServiceFactory.getChatService(source)
-                .asyncChat(ReqInfoContext.getReqInfo().getClientIp(), question, callback);
+                .asyncChat(ReqInfoContext.getReqInfo().getUserId(), question, callback);
     }
-
-    /**
-     * 自动获取用户的聊天历史
-     *
-     * @return
-     */
-    public ChatRecordsVo history(Integer code) {
-        return history(getRecommendAiSource(code));
-    }
-
 
 
     /**
@@ -108,23 +86,7 @@ public class ChatFacade {
      * @return
      */
     public ChatRecordsVo history(AISourceEnum source) {
-        return gptServiceFactory.getChatService(source).getChatHistory(ReqInfoContext.getReqInfo().getClientIp());
-    }
-
-    private AISourceEnum getRecommendAiSource(Integer code) {
-        switch (code){
-            case 1:
-                return AISourceEnum.ALIBABA_WAN_XIANG;
-            case 2:
-                return AISourceEnum.BAI_DU_AI;
-            case 3:
-                return AISourceEnum.XUN_FEI_AI_1_5;
-            case 4:
-                return AISourceEnum.XUN_FEI_AI_2_0;
-            case 5:
-                return AISourceEnum.XUN_FEI_AI_3_0;
-        }
-        return null;
+        return gptServiceFactory.getChatService(source).getChatHistory(ReqInfoContext.getReqInfo().getUserId(),source);
     }
 
 }

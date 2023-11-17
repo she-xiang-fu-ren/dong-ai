@@ -18,7 +18,7 @@ private static final long serialVersionUID = -86478574331284243L;
      
     /**
     * 用户IP（没有用户id，暂时用用户IP作为id使用）
-    */        private String ip;
+    */        private Long userId;
      
     /**
     * 客户端类型

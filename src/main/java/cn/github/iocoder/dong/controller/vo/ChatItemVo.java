@@ -13,8 +13,8 @@ import java.util.UUID;
 /**
  * 一次qa的聊天记录
  *
- * @author YiHui
- * @date 2023/6/9
+ * @author dong
+ * @date 2023/11/16
  */
 @Data
 @Accessors(chain = true)

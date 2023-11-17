@@ -12,5 +12,5 @@ public interface GptHistoryService {
      * @param user
      * @param item
      */
-    void pushChatItem(AISourceEnum source, String user, ChatItemVo item);
+    void pushChatItem(AISourceEnum source, Long user, ChatItemVo item);
 }

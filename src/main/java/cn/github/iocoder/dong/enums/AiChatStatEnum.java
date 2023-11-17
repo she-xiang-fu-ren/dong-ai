@@ -1,8 +1,8 @@
 package cn.github.iocoder.dong.enums;
 
 /**
- * @author YiHui
- * @date 2023/6/15
+ * @author dong
+ * @date 2023/11/16
  */
 public enum AiChatStatEnum {
     IGNORE(-2) {

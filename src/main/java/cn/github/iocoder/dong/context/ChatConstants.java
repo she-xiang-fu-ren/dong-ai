@@ -6,8 +6,8 @@ import cn.github.iocoder.dong.enums.AISourceEnum;
 import java.time.LocalDate;
 
 /**
- * @author YiHui
- * @date 2023/6/2
+ * @author dong
+ * @date 2023/11/16
  */
 public final class ChatConstants {
     /**
@@ -28,7 +28,7 @@ public final class ChatConstants {
      * @param user
      * @return
      */
-    public static String getAiHistoryRecordsKey(AISourceEnum ai, String user) {
+    public static String getAiHistoryRecordsKey(AISourceEnum ai, Long user) {
         return "chat.history." + ai.name().toLowerCase() + "." + user;
     }
 
@@ -48,10 +48,10 @@ public final class ChatConstants {
     public static final long QAS_TIME_INTERVAL = 20_000;
 
 
-    public static final String CHAT_REPLY_RECOMMEND = "请注册技术派之后再来体验吧，技术派官网： \n https://paicoding.com";
+    public static final String CHAT_REPLY_RECOMMEND = "请注册之后再来体验吧";
     public static final String CHAT_REPLY_BEGIN = "让我们开始体验ChatGPT的魅力吧~";
     public static final String CHAT_REPLY_OVER = "体验结束，让我们下次再见吧~";
-    public static final String CHAT_REPLY_CNT_OVER = "次数使用完了哦，勾搭一下群主，多申请点使用次数吧~\n微信：lml200701158";
+    public static final String CHAT_REPLY_CNT_OVER = "次数使用完了哦，勾搭一下群主，多申请点使用次数吧~\n微信：lc13617169220";
 
 
     public static final String CHAT_REPLY_TIME_WAITING = "chatgpt还在努力回答中，请等待几秒之后再问一次吧....";
@@ -63,7 +63,7 @@ public final class ChatConstants {
     /**
      * 异步聊天时返回得提示文案
      */
-    public static final String ASYNC_CHAT_TIP = "小派正在努力回答中, 耐心等待一下吧...";
+    public static final String ASYNC_CHAT_TIP = "小陈正在努力回答中, 耐心等待一下吧...";
 
 
     public static final String SENSITIVE_QUESTION = "提问中包含敏感词，请替换后再试!";
