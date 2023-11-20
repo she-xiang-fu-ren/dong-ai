@@ -1,4 +1,4 @@
-package cn.github.iocoder.dong.service.user.repository.mapper.impl;
+package cn.github.iocoder.dong.service.history.service.impl;
 
 import cn.github.iocoder.dong.controller.vo.ChatItemVo;
 import cn.github.iocoder.dong.service.history.repository.entity.GptHistory;

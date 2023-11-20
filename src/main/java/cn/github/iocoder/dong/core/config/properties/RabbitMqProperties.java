@@ -1,4 +1,4 @@
-package cn.github.iocoder.dong.core.config;
+package cn.github.iocoder.dong.core.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

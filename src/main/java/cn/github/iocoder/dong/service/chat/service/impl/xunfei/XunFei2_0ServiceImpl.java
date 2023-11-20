@@ -37,7 +37,7 @@ public class XunFei2_0ServiceImpl extends AbstractGptService {
      */
     @Override
     public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo response, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
-        return xunFeiService.doAsyncAnswer(user,response,consumer);
+        return xunFeiService.doAsyncAnswer(user,response,consumer,source());
     }
 
     /**
@@ -49,6 +49,6 @@ public class XunFei2_0ServiceImpl extends AbstractGptService {
      */
     @Override
     public AiChatStatEnum doAnswer(Long user, ChatItemVo chat) {
-        return xunFeiService.doAnswer(user,chat);
+        return xunFeiService.doAnswer(user,chat,source());
     }
 }

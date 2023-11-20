@@ -2,6 +2,7 @@ package cn.github.iocoder.dong.service.chat.service.impl.xunfei;
 
 import cn.github.iocoder.dong.controller.vo.ChatItemVo;
 import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.model.enums.AiChatStatEnum;
 import cn.github.iocoder.dong.model.enums.ChatAnswerTypeEnum;
 import cn.github.iocoder.dong.model.enums.WsConnectStateEnum;
@@ -31,7 +32,7 @@ public class XunFeiServiceImpl {
      * @param chat
      * @return
      */
-    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat) {
+    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat,AISourceEnum sourceEnum) {
         return AiChatStatEnum.IGNORE;
     }
 
@@ -42,8 +43,8 @@ public class XunFeiServiceImpl {
      * @param chatRes  保存提问 & 返回的结果，最终会返回给前端用户
      * @param consumer 具体将 response 写回前端的实现策略
      */
-    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
-        XunFeiChatWrapper chat = new XunFeiChatWrapper(String.valueOf(user), chatRes, consumer);
+    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer, AISourceEnum sourceEnum) {
+        XunFeiChatWrapper chat = new XunFeiChatWrapper(String.valueOf(user), chatRes, consumer,sourceEnum);
         chat.initAndQuestion();
         return AiChatStatEnum.IGNORE;
     }
@@ -63,11 +64,11 @@ public class XunFeiServiceImpl {
 
         private ChatItemVo item;
 
-        public XunFeiChatWrapper(String uid, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
+        public XunFeiChatWrapper(String uid, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer,AISourceEnum sourceEnum) {
             client = xunFeiIntegration.getOkHttpClient();
-            String url = xunFeiIntegration.buildXunFeiUrl();
+            String url = xunFeiIntegration.buildXunFeiUrl(sourceEnum);
             request = new Request.Builder().url(url).build();
-            listener = new XunFeiMsgListener(uid, chatRes, consumer);
+            listener = new XunFeiMsgListener(uid, chatRes, consumer,sourceEnum);
         }
 
         /**
@@ -80,10 +81,10 @@ public class XunFeiServiceImpl {
         /**
          * 追加的提问, 主要是为了复用websocket的构造参数
          */
-        public void appendQuestion(String uid, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
-            listener = new XunFeiMsgListener(uid, chatRes, consumer);
-            webSocket = client.newWebSocket(request, listener);
-        }
+//        public void appendQuestion(String uid, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer,AISourceEnum sourceEnum) {
+//            listener = new XunFeiMsgListener(uid, chatRes, consumer,sourceEnum);
+//            webSocket = client.newWebSocket(request, listener);
+//        }
 
     }
 
@@ -96,13 +97,16 @@ public class XunFeiServiceImpl {
 
         private ChatRecordsVo chatRecord;
 
+        private AISourceEnum sourceEnum;
+
         private BiConsumer<AiChatStatEnum, ChatRecordsVo> callback;
 
-        public XunFeiMsgListener(String user, ChatRecordsVo chatRecord, BiConsumer<AiChatStatEnum, ChatRecordsVo> callback) {
+        public XunFeiMsgListener(String user, ChatRecordsVo chatRecord, BiConsumer<AiChatStatEnum, ChatRecordsVo> callback,AISourceEnum sourceEnum) {
             this.connectState = WsConnectStateEnum.INIT;
             this.user = user;
             this.chatRecord = chatRecord;
             this.callback = callback;
+            this.sourceEnum = sourceEnum;
         }
 
         //重写onopen
@@ -111,7 +115,7 @@ public class XunFeiServiceImpl {
             super.onOpen(webSocket, response);
             connectState = WsConnectStateEnum.CONNECTED;
             // 连接成功之后，发送消息
-            webSocket.send(xunFeiIntegration.buildSendMsg(user, chatRecord.getRecords().get(0).getQuestion()));
+            webSocket.send(xunFeiIntegration.buildSendMsg(user, chatRecord.getRecords().get(0).getQuestion(),sourceEnum));
         }
 
         @Override

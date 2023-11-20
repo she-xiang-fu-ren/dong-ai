@@ -1,6 +1,7 @@
 package cn.github.iocoder.dong.core.config;
 
-import cn.github.iocoder.dong.core.Interceptor.AuthHandshakeHandler;
+import cn.github.iocoder.dong.core.config.properties.RabbitMqProperties;
+import cn.github.iocoder.dong.core.helper.AuthHandshakeHandler;
 import cn.github.iocoder.dong.core.Interceptor.AuthHandshakeInterceptor;
 import cn.github.iocoder.dong.core.Interceptor.AuthInChannelInterceptor;
 import cn.github.iocoder.dong.core.Interceptor.AuthOutChannelInterceptor;

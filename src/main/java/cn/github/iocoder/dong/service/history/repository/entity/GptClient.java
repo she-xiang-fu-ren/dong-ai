@@ -3,6 +3,7 @@ package cn.github.iocoder.dong.service.history.repository.entity;
 import cn.github.iocoder.dong.model.api.BaseDO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class GptClient extends BaseDO {
 
 private static final long serialVersionUID = 747214347680712999L;
@@ -35,14 +37,6 @@ private static final long serialVersionUID = 747214347680712999L;
     /**
     * 状态
     */        private Integer status;
-     
-    /**
-    * 创建时间
-    */        private Date createTime;
-     
-    /**
-    * 修改时间
-    */        private Date updateTime;
      
     /**
     * 是否删除

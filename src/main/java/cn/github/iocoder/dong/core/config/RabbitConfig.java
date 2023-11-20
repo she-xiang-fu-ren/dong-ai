@@ -7,6 +7,7 @@
  */
 package cn.github.iocoder.dong.core.config;
 
+import cn.github.iocoder.dong.core.config.properties.RabbitMqProperties;
 import cn.github.iocoder.dong.core.helper.WsAnswerHelper;
 import cn.github.iocoder.dong.core.helper.dto.RabbitMqDTO;
 import cn.github.iocoder.dong.core.utils.JsonUtil;

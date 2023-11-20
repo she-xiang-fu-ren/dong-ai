@@ -1,6 +1,6 @@
 package cn.github.iocoder.dong.model.context;
 
-import cn.github.iocoder.dong.service.user.repository.entity.GptUser;
+import cn.github.iocoder.dong.service.user.repository.entity.UserDO;
 import lombok.Data;
 
 import java.security.Principal;
@@ -39,13 +39,27 @@ public class ReqInfoContext {
         private String session;
 
         /**
+         * 访问的域名
+         */
+        private String host;
+        /**
+         * 访问路径
+         */
+        private String path;
+
+        /**
+         * 设备信息
+         */
+        private String userAgent;
+
+        private String ai;
+
+        /**
          * 用户id
          */
         private Long userId;
 
-        private GptUser user;
-
-        private Boolean LoginOrNot = false;
+        private UserDO user;
 
         @Override
         public String getName() {

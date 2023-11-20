@@ -2,7 +2,7 @@ package cn.github.iocoder.dong.controller;
 
 import cn.github.iocoder.dong.core.helper.WsAnswerHelper;
 import cn.github.iocoder.dong.core.helper.dto.RabbitMqDTO;
-import cn.github.iocoder.dong.core.config.RabbitMqProperties;
+import cn.github.iocoder.dong.core.config.properties.RabbitMqProperties;
 import cn.github.iocoder.dong.core.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -24,8 +24,6 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class ChatRestController {
-    @Autowired
-    private WsAnswerHelper answerHelper;
 
     @Resource
     private RabbitTemplate rabbitTemplate;
@@ -48,7 +46,7 @@ public class ChatRestController {
     public void chat(String msg, @DestinationVariable("session") String session, @Header("simpSessionAttributes") Map<String, Object> attrs) {
         String aiType = (String) attrs.get(WsAnswerHelper.AI_SOURCE_PARAM);
         RabbitMqDTO rabbitMqDTO = new RabbitMqDTO(msg, session, aiType);
-        rabbitTemplate.convertAndSend(rabbitMqProperties.getMSG_TOPIC_KEY(),rabbitMqProperties.getMSG_TOPIC_KEY(), JsonUtil.toStr(rabbitMqDTO));
+        rabbitTemplate.convertAndSend(rabbitMqProperties.getMQ_EXCHANGE(),rabbitMqProperties.getMSG_TOPIC_KEY(), JsonUtil.toStr(rabbitMqDTO));
 //        answerHelper.execute(attrs, () -> {
 //            log.info("{} 用户开始了对话: {} - {}", ReqInfoContext.getReqInfo().getUserId(), aiType, msg);
 //            AISourceEnum source = aiType == null ? null : AISourceEnum.valueOf(aiType);

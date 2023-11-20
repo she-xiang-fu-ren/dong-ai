@@ -6,7 +6,7 @@ import cn.github.iocoder.dong.model.context.ReqInfoContext;
 import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.service.chat.ChatFacade;
-import cn.github.iocoder.dong.service.user.service.GptUserService;
+import cn.github.iocoder.dong.service.user.service.UserService;
 import cn.github.iocoder.dong.core.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class WsAnswerHelper {
 
     public Boolean sendMsgToUser(RabbitMqDTO rabbitMqDTO) {
         ReqInfoContext.ReqInfo reqInfo = new ReqInfoContext.ReqInfo();
-        SpringUtil.getBean(GptUserService.class).initLoginUser(rabbitMqDTO.getSession(),reqInfo);
+        SpringUtil.getBean(UserService.class).initLoginUser(rabbitMqDTO.getSession(),reqInfo);
         ReqInfoContext.addReqInfo(reqInfo);
         try {
             ChatRecordsVo res = chatFacade.autoChat(AISourceEnum.valueOf(rabbitMqDTO.getAiType()), rabbitMqDTO.getMsg(), vo -> response(rabbitMqDTO.getSession(), vo));

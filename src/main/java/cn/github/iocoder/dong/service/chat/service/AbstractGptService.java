@@ -87,16 +87,6 @@ public abstract class AbstractGptService implements GptService {
     }
 
     /**
-     * 是否时异步优先
-     *
-     * @return
-     */
-    @Override
-    public boolean asyncFirst() {
-        return false;
-    }
-
-    /**
      * 开始进入聊天
      *
      * @param user     提问人

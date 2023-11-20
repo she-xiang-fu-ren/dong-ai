@@ -1,6 +1,7 @@
-package cn.github.iocoder.dong.core.config;
+package cn.github.iocoder.dong.core.helper;
 
 import cn.github.iocoder.dong.core.utils.JsonUtil;
+import cn.github.iocoder.dong.core.utils.MapUtils;
 import cn.github.iocoder.dong.core.utils.RedisClient;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -8,23 +9,30 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 使用jwt来存储用户token，则不需要后端来存储session了
  *
- * @author YiHui
+ * @author dong
  * @date 2022/12/5
  */
 @Slf4j
 @Component
 public class UserSessionHelper {
+    @Resource
+    private RedisTemplate redisTemplate;
+
     @Component
     @Data
     @ConfigurationProperties("dong.jwt")
@@ -56,11 +64,13 @@ public class UserSessionHelper {
 
     public String genSession(Long userId) {
         // 1.生成jwt格式的会话，内部持有有效期，用户信息
+        String session = JsonUtil.toStr(MapUtils.create("u", userId));
         String token = JWT.create().withIssuer(jwtProperties.getIssuer()).withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getExpire()))
-                .sign(algorithm);
+                .withPayload(session).sign(algorithm);
 
         // 2.使用jwt生成的token时，后端可以不存储这个session信息, 完全依赖jwt的信息
         // 但是需要考虑到用户登出，需要主动失效这个token，而jwt本身无状态，所以再这里的redis做一个简单的token -> userId的缓存，用于双重判定
+//        redisTemplate.opsForValue().set(token,userId.toString(),jwtProperties.getExpire() / 1000, TimeUnit.SECONDS);
         RedisClient.setStrWithExpire(token, String.valueOf(userId), jwtProperties.getExpire() / 1000);
         return token;
     }

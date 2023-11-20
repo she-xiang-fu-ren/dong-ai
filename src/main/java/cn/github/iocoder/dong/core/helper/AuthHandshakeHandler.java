@@ -1,4 +1,4 @@
-package cn.github.iocoder.dong.core.Interceptor;
+package cn.github.iocoder.dong.core.helper;
 
 
 import cn.github.iocoder.dong.model.context.ReqInfoContext;

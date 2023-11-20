@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 @TableName(value = "gpt_user", autoResultMap = true) // 由于 SQL Server 的 system_user 是关键字，所以使用 system_users
 @Data
@@ -12,15 +13,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GptUser extends BaseDO {
+@Accessors(chain = true)
+public class UserDO extends BaseDO {
 
 private static final long serialVersionUID = 778562368167475185L;
 
-    /**
-    * id
-    */
-    @TableId(type = IdType.AUTO)
-    private Long id;
 
     /**
      * 账号

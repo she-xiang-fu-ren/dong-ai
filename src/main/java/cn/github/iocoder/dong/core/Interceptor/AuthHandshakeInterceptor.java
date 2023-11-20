@@ -2,8 +2,10 @@ package cn.github.iocoder.dong.core.Interceptor;
 
 
 import cn.github.iocoder.dong.core.helper.WsAnswerHelper;
+import cn.github.iocoder.dong.model.context.AISourceThreadLocalContext;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
-import cn.github.iocoder.dong.service.user.service.GptUserService;
+import cn.github.iocoder.dong.model.enums.AISourceEnum;
+import cn.github.iocoder.dong.service.user.service.UserService;
 import cn.github.iocoder.dong.core.utils.SessionUtil;
 import cn.github.iocoder.dong.core.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class AuthHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         log.info("准备开始握手了!");
         String session = SessionUtil.findCookieByName(request, "f-session");
         ReqInfoContext.ReqInfo reqInfo = new ReqInfoContext.ReqInfo();
-        SpringUtil.getBean(GptUserService.class).initLoginUser(session, reqInfo);
+        SpringUtil.getBean(UserService.class).initLoginUser(session, reqInfo);
 
         if (reqInfo.getUser() == null) {
             log.info("websocket 握手失败，请登录之后再试");
@@ -46,7 +48,9 @@ public class AuthHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         }
         // 将用户信息写入到属性中
         attributes.put("f-session", reqInfo);
-        attributes.put(WsAnswerHelper.AI_SOURCE_PARAM, initAiSource(request.getURI().getPath()));
+        String ai = initAiSource(request.getURI().getPath());
+        reqInfo.setAi(ai);
+        attributes.put(WsAnswerHelper.AI_SOURCE_PARAM, ai);
         return true;
     }
 

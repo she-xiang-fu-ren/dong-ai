@@ -1,6 +1,8 @@
 package cn.github.iocoder.dong.service.chat.service.impl.xunfei.integration;
 
 import cn.github.iocoder.dong.model.context.AISourceThreadLocalContext;
+import cn.github.iocoder.dong.model.context.ReqInfoContext;
+import cn.github.iocoder.dong.service.chat.service.GptService;
 import cn.github.iocoder.dong.service.history.repository.entity.GptClient;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.service.history.repository.mapper.GptClientMapper;
@@ -14,6 +16,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -57,9 +60,9 @@ public class XunFeiIntegration {
         gptClient =gptClientMapper.selectById(10001L);
     }
 
-    public String buildXunFeiUrl() {
+    public String buildXunFeiUrl(AISourceEnum sourceEnum) {
         try {
-            String authUrl = getAuthorizationUrl(getUrl(), gptClient.getClientKey(), gptClient.getClientSecret());
+            String authUrl = getAuthorizationUrl(getUrl(sourceEnum), gptClient.getClientKey(), gptClient.getClientSecret());
             String url = authUrl.replace("https://", "wss://").replace("http://", "ws://");
             return url;
         } catch (Exception e) {
@@ -107,7 +110,7 @@ public class XunFeiIntegration {
         return httpUrl.toString();
     }
 
-    public String buildSendMsg(String uid, String question) {
+    public String buildSendMsg(String uid, String question,AISourceEnum sourceEnum) {
         JsonObject frame = new JsonObject();
         JsonObject header = new JsonObject();
         JsonObject chat = new JsonObject();
@@ -121,7 +124,7 @@ public class XunFeiIntegration {
         header.addProperty("app_id", gptClient.getAppId());
         header.addProperty("uid", uid);
         //填充parameter
-        chat.addProperty("domain", getDomain());
+        chat.addProperty("domain", getDomain(sourceEnum));
 
         chat.addProperty("random_threshold", 0);
         chat.addProperty("max_tokens", 1024);
@@ -256,9 +259,8 @@ public class XunFeiIntegration {
         private int totalTokens;
     }
 
-    public String getUrl(){
-        AISourceEnum context = AISourceThreadLocalContext.getContext();
-        Integer code = context.getCode();
+    public String getUrl(AISourceEnum sourceEnum){
+        Integer code = sourceEnum.getCode();
         switch (code){
             case 3:
                 return "http://spark-api.xf-yun.com/v1.1/chat";
@@ -270,9 +272,8 @@ public class XunFeiIntegration {
         return "";
     }
 
-    public String getDomain(){
-        AISourceEnum context = AISourceThreadLocalContext.getContext();
-        Integer code = context.getCode();
+    public String getDomain(AISourceEnum sourceEnum){
+        Integer code = sourceEnum.getCode();
         switch (code){
             case 3:
                 return "general";

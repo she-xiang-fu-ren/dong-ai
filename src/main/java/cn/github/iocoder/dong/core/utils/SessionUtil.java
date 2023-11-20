@@ -1,11 +1,13 @@
 package cn.github.iocoder.dong.core.utils;
 
 import cn.hutool.core.util.ObjectUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 
 public class SessionUtil {
@@ -32,6 +34,23 @@ public class SessionUtil {
         cookie.setPath("/");
         cookie.setMaxAge(0);
         return cookie;
+    }
+
+    /**
+     * 根据key查询cookie
+     *
+     * @param request
+     * @param name
+     * @return
+     */
+    public static Cookie findCookieByName(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) {
+            return null;
+        }
+
+        return Arrays.stream(cookies).filter(cookie -> StringUtils.equalsAnyIgnoreCase(cookie.getName(), name))
+                .findFirst().orElse(null);
     }
 
     public static String findCookieByName(ServerHttpRequest request, String name) {

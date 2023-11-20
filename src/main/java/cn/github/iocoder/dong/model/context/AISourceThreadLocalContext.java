@@ -18,4 +18,8 @@ public class AISourceThreadLocalContext {
         SOURCE_ENUM_THREAD_LOCAL.set(aiSourceEnum);
     }
 
+    public static  void cloneContext(){
+        SOURCE_ENUM_THREAD_LOCAL.remove();
+    }
+
 }
