@@ -23,9 +23,9 @@ public class LoginController {
         if (StringUtils.isNotBlank(session)) {
             // cookie中写入用户登录信息，用于身份识别
             response.addCookie(SessionUtil.newCookie(userService.SESSION_KEY, session));
-            return "/home/index";
+            return "home/index";
         }
-        return "/err/500";
+        return "err/500";
     }
 
 

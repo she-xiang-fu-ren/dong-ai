@@ -1,11 +1,6 @@
 package cn.github.iocoder.dong.service.chat.service.impl.xunfei.integration;
 
-import cn.github.iocoder.dong.model.context.AISourceThreadLocalContext;
-import cn.github.iocoder.dong.model.context.ReqInfoContext;
-import cn.github.iocoder.dong.service.chat.service.GptService;
-import cn.github.iocoder.dong.service.history.repository.entity.GptClient;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
-import cn.github.iocoder.dong.service.history.repository.mapper.GptClientMapper;
 import cn.github.iocoder.dong.core.utils.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.google.gson.JsonArray;
@@ -16,7 +11,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -46,23 +41,23 @@ public class XunFeiIntegration {
     @Getter
     private OkHttpClient okHttpClient;
 
-    @Resource
-    private GptClientMapper gptClientMapper;
+    @Value("${gpt-ai.xun_fei.app_id}")
+    private String appId;
 
-    /**
-     * 拿讯飞的配置
-     */
-    private static GptClient gptClient;
+    @Value("${gpt-ai.xun_fei.client_key}")
+    private String clientKey;
+
+    @Value("${gpt-ai.xun_fei.client_secret}")
+    private String clientSecret;
 
     @PostConstruct
     public void init() {
         okHttpClient = new OkHttpClient.Builder().build();
-        gptClient =gptClientMapper.selectById(10001L);
     }
 
     public String buildXunFeiUrl(AISourceEnum sourceEnum) {
         try {
-            String authUrl = getAuthorizationUrl(getUrl(sourceEnum), gptClient.getClientKey(), gptClient.getClientSecret());
+            String authUrl = getAuthorizationUrl(getUrl(sourceEnum), clientKey, clientSecret);
             String url = authUrl.replace("https://", "wss://").replace("http://", "ws://");
             return url;
         } catch (Exception e) {
@@ -121,7 +116,7 @@ public class XunFeiIntegration {
         JsonArray ja = new JsonArray();
 
         //填充header
-        header.addProperty("app_id", gptClient.getAppId());
+        header.addProperty("app_id", appId);
         header.addProperty("uid", uid);
         //填充parameter
         chat.addProperty("domain", getDomain(sourceEnum));
