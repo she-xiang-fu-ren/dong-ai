@@ -1,4 +1,4 @@
-package cn.github.iocoder.dong.model.exception;
+package cn.github.iocoder.dong.core.exception;
 
 /**
  * 未命中异常

@@ -1,4 +1,4 @@
-package cn.github.iocoder.dong.model.exception;
+package cn.github.iocoder.dong.core.exception;
 
 
 import cn.github.iocoder.dong.model.api.Status;

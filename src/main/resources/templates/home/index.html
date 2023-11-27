@@ -7,10 +7,9 @@
 </div>
 
 <link rel="stylesheet" href="/css/chat-home.css"/>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
 
 <script src="/js/stomp.min.js"></script>
-<script src="/js/jquery.min.js"></script>
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
 
 <body id="body" class="bg-color">
 <!-- 导航栏 -->
@@ -24,29 +23,29 @@
         <div class="chat-main">
             <div class="window-header">
                 <div class="window-header-title">
-<!--                    <div class="name">-->
-<!--                        <div class="window-header-main-title home_chat-body-title__5S8w4"-->
-<!--                             th:data-target="${!global.isLogin ? '#loginModal' : (global.user.starStatus == -1 ? '#registerModal' : '')}"-->
-<!--                             th:data-toggle="${!global.isLogin || global.user.starStatus == -1 ? 'modal' : ''}">-->
-<!--                            点击登录，体验派聪明AI助手-->
-<!--                        </div>-->
-<!--                        <div th:if="${global.user != null}">-->
-<!--                            <div th:switch="${global.user.starStatus}">-->
-<!--                                <a th:case="-1"-->
-<!--                                   href="#"-->
-<!--                                   class="annotation"-->
-<!--                                   data-target="#registerModal"-->
-<!--                                   data-toggle="modal"-->
-<!--                                >绑定二哥编程星球，提升每天对话次数</a>-->
-<!--                                <span th:case="0" class="annotation">审核中</span>-->
-<!--                                <span th:case="1" class="annotation">试用中，添加管理员微信 itwanger 催审核</span>-->
-<!--                                <div class="c-bubble-trigger com-verification" th:case="2">-->
-<!--                                    <i class="verified"></i>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                    <div class="name">
+                        <div class="window-header-main-title home_chat-body-title__5S8w4"
+                             th:data-target="${!global.isLogin ? '#loginModal' : ''}"
+                             th:data-toggle="${!global.isLogin ? 'modal' : ''}">
+                            点击登录，体验派聪明AI助手
+                        </div>
+                        <div th:if="${global.user != null}">
+                            <div th:switch="2">
+                                <a th:case="-1"
+                                   href="#"
+                                   class="annotation"
+                                   data-target="#registerModal"
+                                   data-toggle="modal"
+                                >绑定二哥编程星球，提升每天对话次数</a>
+                                <span th:case="0" class="annotation">审核中</span>
+                                <span th:case="1" class="annotation">试用中，添加管理员微信 itwanger 催审核</span>
+                                <div class="c-bubble-trigger com-verification" th:case="2">
+                                    <i class="verified"></i>
+                                </div>
+                            </div>
+                        </div>
 
-<!--                    </div>-->
+                    </div>
 
                     <div class="window-header-sub-title">与派聪明的 <span id="chatCnt">0</span> 条对话（以天为单位，无限期重置）</div>
                 </div>
@@ -88,34 +87,36 @@
     const chatContent = $("#chat-content");
     let stompClient = null;
     // 用户名
-    // const chatTitle = $(".window-header-main-title");
+    const chatTitle = $(".window-header-main-title");
 
     // 从 global.user.photo 中取出用户头像 thymeleaf 传入的值
-    let session =null;
-    var strcookie = document.cookie;//获取cookie字符串
-    console.log("strcookie:",strcookie);
-    var arrcookie = strcookie.split("; ");//分割
-    //遍历匹配
-    for ( var i = 0; i < arrcookie.length; i++) {
-        var arr = arrcookie[i].split("=");
-        if (arr[0] == 'f-session'){
-            session= arr[1];
-        }
-    }
+    const isLogin = [[${global.isLogin}]], user = [[${global.user}]];
+
+
     // 页面加载完成后，执行 initWs
     $(function () {
+        if (isLogin) {
             initWs();
+        } else {
+            console.log("请先登录");
+        }
     });
 
     // 建立会话, 首先判断一下用户是否已经登录
-    // const session = getCookie("f-session");
+    const session = getCookie("f-session");
+
+
 
 
     $('#chat-type').change(function(e) {
         // 更新了选中的下拉框时，重新建立连接
+        if (isLogin) {
             chatContent.html('');
             disconnect();
             initWs();
+        } else {
+            console.log("请先登录");
+        }
     });
 
     function initWs() {
@@ -134,7 +135,7 @@
             sendBtnText.text("发送");
             sendBtn.removeAttr("disabled");
             // 改变 chatTitle 的内容
-            // chatTitle.text(user.userName);
+            chatTitle.text(user.username);
 
 
             stompClient.subscribe(`/user/chat/rsp`, function (message) {

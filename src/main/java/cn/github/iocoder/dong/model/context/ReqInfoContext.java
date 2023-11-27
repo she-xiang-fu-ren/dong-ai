@@ -1,6 +1,6 @@
 package cn.github.iocoder.dong.model.context;
 
-import cn.github.iocoder.dong.service.user.repository.entity.UserDO;
+import cn.github.iocoder.dong.model.context.dto.UserDTO;
 import lombok.Data;
 
 import java.security.Principal;
@@ -59,7 +59,7 @@ public class ReqInfoContext {
          */
         private Long userId;
 
-        private UserDO user;
+        private UserDTO user;
 
         @Override
         public String getName() {

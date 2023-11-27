@@ -42,9 +42,9 @@
   height: 2px;
   width: 25%;
   background: linear-gradient(
-    270deg,
-    var(--pai-brand-1-normal),
-    var(--pai-color-fff-normal)
+          270deg,
+          var(--pai-brand-1-normal),
+          var(--pai-color-fff-normal)
   );
 }
 
@@ -56,9 +56,9 @@
   height: 2px;
   width: 25%;
   background: linear-gradient(
-    90deg,
-    var(--pai-brand-1-normal),
-    var(--pai-color-fff-normal)
+          90deg,
+          var(--pai-brand-1-normal),
+          var(--pai-color-fff-normal)
   );
 }
 
@@ -228,7 +228,7 @@
   padding: 1em 1.5em;
   position: relative;
   transition: opacity 0.1s ease, color 0.1s ease, background 0.1s ease,
-    box-shadow 0.1s ease;
+  box-shadow 0.1s ease;
   color: #276f86;
   font-size: 0.8em;
 }

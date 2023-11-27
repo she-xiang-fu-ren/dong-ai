@@ -3,6 +3,7 @@ package cn.github.iocoder.dong.core.filter;
 import cn.github.iocoder.dong.core.utils.IpUtil;
 import cn.github.iocoder.dong.core.utils.SessionUtil;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
+import cn.github.iocoder.dong.service.global.GlobalInitService;
 import cn.github.iocoder.dong.service.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class ReqRecordFilter implements Filter {
 
     @Autowired
-    private UserService userService;
+    private GlobalInitService userService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

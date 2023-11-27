@@ -3,9 +3,11 @@ package cn.github.iocoder.dong.service.user.service.impl;
 import cn.github.iocoder.dong.core.helper.UserSessionHelper;
 import cn.github.iocoder.dong.core.helper.UserPwdEncoder;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
+import cn.github.iocoder.dong.model.context.dto.UserDTO;
+import cn.github.iocoder.dong.model.convert.UserConvert;
 import cn.github.iocoder.dong.model.enums.StatusEnum;
 import cn.github.iocoder.dong.model.enums.YesOrNoEnum;
-import cn.github.iocoder.dong.model.exception.ExceptionUtil;
+import cn.github.iocoder.dong.core.exception.ExceptionUtil;
 import cn.github.iocoder.dong.service.user.repository.entity.UserDO;
 import cn.github.iocoder.dong.service.user.repository.mapper.UserMapper;
 import cn.github.iocoder.dong.service.user.service.UserService;
@@ -25,26 +27,6 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserPwdEncoder userPwdEncoder;
-
-    /**
-     * 初始话用户
-     *
-     * @param session
-     * @param reqInfo
-     */
-    @Override
-    public void initLoginUser(String session, ReqInfoContext.ReqInfo reqInfo) {
-        //判断session是否为空
-        if (ObjectUtil.isNotNull(session)) {
-            Long userId = userSessionHelper.getUserIdBySession(session);
-            UserDO userDO = userMapper.selectById(userId);
-            if (ObjectUtil.isNotNull(userDO)) {
-                reqInfo.setSession(session);
-                reqInfo.setUserId(userId);
-                reqInfo.setUser(userDO);
-            }
-        }
-    }
 
     /**
      * 用户名、密码校验登录

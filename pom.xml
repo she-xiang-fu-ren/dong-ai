@@ -24,6 +24,7 @@
         <guave.version>21.0</guave.version>
         <webSocket.version>2.7.17</webSocket.version>
         <jwt.version>4.4.0</jwt.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
     </properties>
 
     <parent>
@@ -168,6 +169,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
             <version>${webSocket.version}</version>
+        </dependency>
+        <!-- 引入 mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>compile</scope>
+            <version>${mapstruct.version}</version>
         </dependency>
     </dependencies>
     <build>

@@ -5,6 +5,7 @@ import cn.github.iocoder.dong.core.helper.WsAnswerHelper;
 import cn.github.iocoder.dong.model.context.AISourceThreadLocalContext;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
+import cn.github.iocoder.dong.service.global.GlobalInitService;
 import cn.github.iocoder.dong.service.user.service.UserService;
 import cn.github.iocoder.dong.core.utils.SessionUtil;
 import cn.github.iocoder.dong.core.utils.SpringUtil;
@@ -40,7 +41,7 @@ public class AuthHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         log.info("准备开始握手了!");
         String session = SessionUtil.findCookieByName(request, "f-session");
         ReqInfoContext.ReqInfo reqInfo = new ReqInfoContext.ReqInfo();
-        SpringUtil.getBean(UserService.class).initLoginUser(session, reqInfo);
+        SpringUtil.getBean(GlobalInitService.class).initLoginUser(session, reqInfo);
 
         if (reqInfo.getUser() == null) {
             log.info("websocket 握手失败，请登录之后再试");

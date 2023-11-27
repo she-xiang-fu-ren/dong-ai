@@ -2,7 +2,7 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="navbar">
   <nav
-          th:data-islogin="true"
+          th:data-islogin="${global.isLogin}"
           class="navbar navbar-expand-md bg-color-white fixed-top"
   >
     <div class="nav-body">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="nav-right">
-        <ul th:if="${!true}">
+        <ul th:if="${!global.isLogin}">
           <!--  待登录 -->
           <li class="nav-item">
             <a
@@ -28,7 +28,7 @@
             </a>
           </li>
         </ul>
-        <ul th:if="${true}" class="nav-right-user">
+        <ul th:if="${global.isLogin}" class="nav-right-user">
           <!-- 增加一个 VIP 的角标 -->
           <li class="nav-item vip">
               <span th:text="星球VIP会员"></span>
@@ -53,11 +53,8 @@
                   <!-- 下落框内容 -->
                   <!--  调整为所有用户都可以直接看到管理后台  th:if="${#strings.equalsIgnoreCase(global.user.role, 'admin')}"-->
                   <!-- 本地环境的时候不显示，本地环境的时候通过后端直接启动管理后台 -->
-                  <div
-                          class="dropdown-divider"
-                  ></div>
                   <a
-                          th:href="${'/user/home?userId=' + '1'}"
+                          th:href="${'/user/home?userId=' + global.user.id}"
                           class="dropdown-item"
                           href="#"
                   >
@@ -74,7 +71,7 @@
   </nav>
   <!-- 登录 Modal -->
   <div
-          th:if="${!true}"
+          th:if="${!global.isLogin}"
           class="modal fade"
           id="loginModal"
           data-backdrop="static"
@@ -125,17 +122,6 @@
                     </div>
                   </div>
                 </div>
-                <a class="clickable" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">
-                  绑定星球，畅享VIP服务
-                </a>
-              </div>
-            </div>
-            <div class="tabpane-container">
-
-              <div class="explain">
-                <bold>输入验证码</bold>
-                <span id="code"></span>
-                <div><span id="state">有效期五分钟 👉</span> <a id="refreshCode">手动刷新</a></div>
               </div>
             </div>
           </div>
@@ -246,144 +232,12 @@
         window.location.reload();
       }
     }
-
-    /**
-     * 记录长连接
-     * @type {null}
-     */
-    let sseSource = null;
-    let intHook = null;
-    let deviceId = null;
-
-    /**
-     * 建立半长连接，用于实现自动登录
-     */
-    function buildConnect() {
-      if (sseSource != null) {
-        try {
-          sseSource.close();
-        } catch (e) {
-          console.log("关闭上次的连接", e);
-        }
-        try {
-          window.clearInterval(intHook);
-        } catch (e) {
-        }
-      }
-
-      if(!deviceId) {
-        deviceId = getCookie("f-device");
-      }
-      const subscribeUrl = "/subscribe?deviceId=" + deviceId;
-      const source = new EventSource(subscribeUrl);
-      sseSource = source;
-
-      source.onmessage = function (event) {
-        let text = event.data.replaceAll("\"", "").trim();
-        console.log("receive: " + text);
-
-        let newCode;
-        if (text.startsWith('refresh#')) {
-          // 刷新验证码
-          newCode = text.substring(8).trim();
-          codeTag.text(newCode);
-          stateTag.text("已刷新 ");
-        } else if (text === 'scan') {
-          // 二维码扫描
-          stateTag.text("已扫描 ");
-        } else if (text.startsWith('login#')) {
-          // 登录格式为 login#cookie
-          console.log("登录成功,保存cookie", text)
-          document.cookie = text.substring(6);
-          source.close();
-          refreshPage();
-        } else if (text.startsWith("init#")) {
-          newCode = text.substring(5).trim();
-          codeTag.text(newCode);
-          console.log("初始化验证码: ", newCode);
-        }
-
-        if (newCode != null) {
-          try {
-            window.clearInterval(intHook);
-          } catch (e) {}
-        }
-
-      };
-
-      source.onopen = function (evt) {
-        deviceId = getCookie("f-device");
-        console.log("开始订阅, 设备id=", deviceId, evt);
-      }
-      source.onerror = function (e, evt) {
-        console.log("连接错误，重新开始", e, evt)
-        stateTag.text("连接中断,请刷新重连");
-        buildConnect(code);
-      }
-
-      fetchCodeCnt = 0;
-      intHook = self.setInterval("fetchCode()", 1000);
-    }
-
-    let fetchCodeCnt = 0;
-    function fetchCode() {
-      if (deviceId) {
-        if (++fetchCodeCnt > 5) {
-          // 为了避免不停的向后端发起请求，做一个最大的重试计数限制
-          try {
-            window.clearInterval(intHook);
-          } catch (e) {}
-          return;
-        }
-
-        $.ajax({
-          url: "/login/fetch?deviceId=" + deviceId, type: "get", dataType: "text", success: function (data) {
-            console.log("data>>>>>>>>: ", data);
-            if (data != 'fail') {
-              codeTag.text(data);
-              try {
-                window.clearInterval(intHook);
-              } catch (e) {}
-            }
-          },
-          error: function (e) {
-            console.log("some error! ", e);
-          }
-        });
-      } else {
-        console.log("deviceId未获取，稍后再试!");
-      }
-    }
-
-    function refreshCode() {
-      $.ajax({
-        url: "/login/refresh?deviceId=" + deviceId, dataType: "json", type: "get", success: function (data) {
-          const code = data['result']['code'];
-          const reconnect = data['result']['reconnect']
-          console.log("验证码刷新完成: ", data);
-
-          if (reconnect) {
-            // 重新建立连接
-            buildConnect();
-            $('#state').text("已刷新!");
-          } else if(code) {
-            if (codeTag.text() !== code) {
-              console.log("主动刷新验证码!");
-              codeTag.text(code);
-              stateTag.text("已刷新!");
-            } else {
-              console.log("验证码已刷新了!");
-            }
-          }
-        }
-      })
-    }
     $('#loginModal').on('show.bs.modal', function () {
       console.log("登录弹窗已展示!");
-      buildConnect();
+      // buildConnect();
     })
     $('#refreshCode').click(() => {
-      refreshCode();
+      // refreshCode();
     })
 
     // 获取用户头像和下落框元素

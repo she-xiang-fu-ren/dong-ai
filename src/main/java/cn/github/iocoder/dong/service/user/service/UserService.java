@@ -9,12 +9,6 @@ public interface UserService {
 
     String SESSION_KEY = "f-session";
 
-    /**
-     * 初始话用户
-     * @param session
-     * @param reqInfo
-     */
-    void initLoginUser(String session, ReqInfoContext.ReqInfo reqInfo);
 
     /**
      * 用户名、密码校验登录
