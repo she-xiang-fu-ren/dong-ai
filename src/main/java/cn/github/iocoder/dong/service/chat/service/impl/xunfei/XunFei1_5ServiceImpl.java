@@ -1,7 +1,7 @@
 package cn.github.iocoder.dong.service.chat.service.impl.xunfei;
 
-import cn.github.iocoder.dong.controller.vo.ChatItemVo;
-import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.controller.vo.ChatItemVO;
+import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.model.enums.AiChatStatEnum;
 import cn.github.iocoder.dong.service.chat.service.AbstractGptService;
@@ -35,7 +35,7 @@ public class XunFei1_5ServiceImpl extends AbstractGptService {
      * @return 返回的会话状态，控制是否需要将结果直接返回给前端
      */
     @Override
-    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo response, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
+    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVO response, BiConsumer<AiChatStatEnum, ChatRecordsVO> consumer) {
         return xunFeiService.doAsyncAnswer(user,response,consumer,source());
     }
 
@@ -47,7 +47,7 @@ public class XunFei1_5ServiceImpl extends AbstractGptService {
      * @return true 表示正确回答了； false 表示回答出现异常
      */
     @Override
-    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat) {
+    public AiChatStatEnum doAnswer(Long user, ChatItemVO chat) {
         return xunFeiService.doAnswer(user,chat,source());
     }
 }

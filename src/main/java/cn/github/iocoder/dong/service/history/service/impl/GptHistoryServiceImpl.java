@@ -1,6 +1,6 @@
 package cn.github.iocoder.dong.service.history.service.impl;
 
-import cn.github.iocoder.dong.controller.vo.ChatItemVo;
+import cn.github.iocoder.dong.controller.vo.ChatItemVO;
 import cn.github.iocoder.dong.service.history.repository.entity.GptHistory;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.service.history.repository.mapper.GptHistoryMapper;
@@ -23,7 +23,7 @@ public class GptHistoryServiceImpl implements GptHistoryService {
      * @param item
      */
     @Override
-    public void pushChatItem(AISourceEnum source, Long user, ChatItemVo item) {
+    public void pushChatItem(AISourceEnum source, Long user, ChatItemVO item) {
         GptHistory userAiHistoryDO = new GptHistory();
         userAiHistoryDO.setAiType(source.getName());
         userAiHistoryDO.setUserId(user);

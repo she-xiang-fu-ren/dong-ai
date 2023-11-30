@@ -77,6 +77,7 @@ public enum StatusEnum {
     USER_STAR_NOT_EXISTS(400_404_002, "星球编号不存在:%s"),
     // 星球编号重复
     USER_STAR_REPEAT(400_404_002, "星球编号重复:%s"),
+    LOGIN_FAILED_SIGN(400_403_001, "注册失败:%s"),
     USER_PWD_ERROR(400_500_002, "用户名or密码错误");
 
     private int code;

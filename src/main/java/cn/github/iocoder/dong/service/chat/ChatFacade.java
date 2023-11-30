@@ -1,7 +1,7 @@
 package cn.github.iocoder.dong.service.chat;
 
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
-import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.service.chat.factory.GptServiceFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class ChatFacade {
      * @param callback
      * @return
      */
-    public ChatRecordsVo autoChat(AISourceEnum source, String question, Consumer<ChatRecordsVo> callback) {
+    public ChatRecordsVO autoChat(AISourceEnum source, String question, Consumer<ChatRecordsVO> callback) {
         if (source.asyncSupport() && gptServiceFactory.getChatService(source).asyncFirst()) {
             // 支持异步且异步优先的场景下，自动选择异步方式进行聊天
             return asyncChat(source, question, callback);
@@ -48,7 +48,7 @@ public class ChatFacade {
      * @param source
      * @return
      */
-    public ChatRecordsVo chat(AISourceEnum source, String question) {
+    public ChatRecordsVO chat(AISourceEnum source, String question) {
         return gptServiceFactory.getChatService(source).chat(ReqInfoContext.getReqInfo().getUserId(), question);
     }
 
@@ -59,7 +59,7 @@ public class ChatFacade {
      * @param source
      * @return
      */
-    public ChatRecordsVo chat(AISourceEnum source, String question, Consumer<ChatRecordsVo> callback) {
+    public ChatRecordsVO chat(AISourceEnum source, String question, Consumer<ChatRecordsVO> callback) {
         return gptServiceFactory.getChatService(source)
                 .chat(ReqInfoContext.getReqInfo().getUserId(), question, callback);
     }
@@ -70,7 +70,7 @@ public class ChatFacade {
      * @param source
      * @param question
      */
-    public ChatRecordsVo asyncChat(AISourceEnum source, String question, Consumer<ChatRecordsVo> callback) {
+    public ChatRecordsVO asyncChat(AISourceEnum source, String question, Consumer<ChatRecordsVO> callback) {
         return gptServiceFactory.getChatService(source)
                 .asyncChat(ReqInfoContext.getReqInfo().getUserId(), question, callback);
     }
@@ -82,7 +82,7 @@ public class ChatFacade {
      * @param source
      * @return
      */
-    public ChatRecordsVo history(AISourceEnum source) {
+    public ChatRecordsVO history(AISourceEnum source) {
         return gptServiceFactory.getChatService(source).getChatHistory(ReqInfoContext.getReqInfo().getUserId(),source);
     }
 

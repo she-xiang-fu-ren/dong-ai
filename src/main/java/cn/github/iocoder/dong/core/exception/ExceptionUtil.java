@@ -9,8 +9,8 @@ import cn.github.iocoder.dong.model.enums.StatusEnum;
  */
 public class ExceptionUtil {
 
-    public static ForumAdviceException of(StatusEnum status, Object... args) {
-        return new ForumAdviceException(status, args);
+    public static ForumException of(StatusEnum status, Object... args) {
+        return new ForumException(status, args);
     }
 
 }

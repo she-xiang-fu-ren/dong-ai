@@ -3,11 +3,10 @@ package cn.github.iocoder.dong.core.helper;
 
 import cn.github.iocoder.dong.core.helper.dto.RabbitMqDTO;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
-import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.service.chat.ChatFacade;
 import cn.github.iocoder.dong.service.global.GlobalInitService;
-import cn.github.iocoder.dong.service.user.service.UserService;
 import cn.github.iocoder.dong.core.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class WsAnswerHelper {
         SpringUtil.getBean(GlobalInitService.class).initLoginUser(rabbitMqDTO.getSession(),reqInfo);
         ReqInfoContext.addReqInfo(reqInfo);
         try {
-            ChatRecordsVo res = chatFacade.autoChat(AISourceEnum.valueOf(rabbitMqDTO.getAiType()), rabbitMqDTO.getMsg(), vo -> response(rabbitMqDTO.getSession(), vo));
+            ChatRecordsVO res = chatFacade.autoChat(AISourceEnum.valueOf(rabbitMqDTO.getAiType()), rabbitMqDTO.getMsg(), vo -> response(rabbitMqDTO.getSession(), vo));
             log.info("AI直接返回：{}", res);
         }finally {
             ReqInfoContext.clear();
@@ -44,7 +43,7 @@ public class WsAnswerHelper {
     }
 
     public void sendMsgHistoryToUser(String session, AISourceEnum ai) {
-        ChatRecordsVo vo = chatFacade.history(ai);
+        ChatRecordsVO vo = chatFacade.history(ai);
         response(session, vo);
     }
 
@@ -54,7 +53,7 @@ public class WsAnswerHelper {
      * @param session
      * @param response
      */
-    public void response(String session, ChatRecordsVo response) {
+    public void response(String session, ChatRecordsVO response) {
         // convertAndSendToUser 方法可以发送信给给指定用户,
         // 底层会自动将第二个参数目的地址 /chat/rsp 拼接为
         // /user/username/chat/rsp，其中第二个参数 username 即为这里的第一个参数 session

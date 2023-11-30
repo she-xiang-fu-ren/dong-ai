@@ -1,7 +1,7 @@
 package cn.github.iocoder.dong.service.chat.service.impl.xunfei;
 
-import cn.github.iocoder.dong.controller.vo.ChatItemVo;
-import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.controller.vo.ChatItemVO;
+import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.model.enums.AiChatStatEnum;
 import cn.github.iocoder.dong.model.enums.ChatAnswerTypeEnum;
@@ -32,7 +32,7 @@ public class XunFeiServiceImpl {
      * @param chat
      * @return
      */
-    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat,AISourceEnum sourceEnum) {
+    public AiChatStatEnum doAnswer(Long user, ChatItemVO chat, AISourceEnum sourceEnum) {
         return AiChatStatEnum.IGNORE;
     }
 
@@ -43,7 +43,7 @@ public class XunFeiServiceImpl {
      * @param chatRes  保存提问 & 返回的结果，最终会返回给前端用户
      * @param consumer 具体将 response 写回前端的实现策略
      */
-    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer, AISourceEnum sourceEnum) {
+    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVO chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVO> consumer, AISourceEnum sourceEnum) {
         XunFeiChatWrapper chat = new XunFeiChatWrapper(String.valueOf(user), chatRes, consumer,sourceEnum);
         chat.initAndQuestion();
         return AiChatStatEnum.IGNORE;
@@ -62,9 +62,9 @@ public class XunFeiServiceImpl {
 
         private XunFeiMsgListener listener;
 
-        private ChatItemVo item;
+        private ChatItemVO item;
 
-        public XunFeiChatWrapper(String uid, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer,AISourceEnum sourceEnum) {
+        public XunFeiChatWrapper(String uid, ChatRecordsVO chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVO> consumer, AISourceEnum sourceEnum) {
             client = xunFeiIntegration.getOkHttpClient();
             String url = xunFeiIntegration.buildXunFeiUrl(sourceEnum);
             request = new Request.Builder().url(url).build();
@@ -95,13 +95,13 @@ public class XunFeiServiceImpl {
 
         private String user;
 
-        private ChatRecordsVo chatRecord;
+        private ChatRecordsVO chatRecord;
 
         private AISourceEnum sourceEnum;
 
-        private BiConsumer<AiChatStatEnum, ChatRecordsVo> callback;
+        private BiConsumer<AiChatStatEnum, ChatRecordsVO> callback;
 
-        public XunFeiMsgListener(String user, ChatRecordsVo chatRecord, BiConsumer<AiChatStatEnum, ChatRecordsVo> callback,AISourceEnum sourceEnum) {
+        public XunFeiMsgListener(String user, ChatRecordsVO chatRecord, BiConsumer<AiChatStatEnum, ChatRecordsVO> callback, AISourceEnum sourceEnum) {
             this.connectState = WsConnectStateEnum.INIT;
             this.user = user;
             this.chatRecord = chatRecord;
@@ -121,7 +121,7 @@ public class XunFeiServiceImpl {
         @Override
         public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
             super.onMessage(webSocket, text);
-            ChatItemVo item = chatRecord.getRecords().get(0);
+            ChatItemVO item = chatRecord.getRecords().get(0);
             XunFeiIntegration.ResponseData responseData = xunFeiIntegration.parse2response(text);
             if (responseData.successReturn()) {
                 // 成功获取到结果

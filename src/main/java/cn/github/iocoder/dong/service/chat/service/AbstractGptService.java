@@ -1,13 +1,12 @@
 package cn.github.iocoder.dong.service.chat.service;
 
 import cn.github.iocoder.dong.model.context.ChatConstants;
-import cn.github.iocoder.dong.controller.vo.ChatItemVo;
-import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.controller.vo.ChatItemVO;
+import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.model.enums.AiChatStatEnum;
 import cn.github.iocoder.dong.core.utils.RedisClient;
 import cn.github.iocoder.dong.service.history.service.GptHistoryService;
-import cn.github.iocoder.dong.service.chat.service.GptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +61,7 @@ public abstract class AbstractGptService implements GptService {
     /**
      * 保存聊天记录
      */
-    protected void recordChatItem(Long user, ChatItemVo item) {
+    protected void recordChatItem(Long user, ChatItemVO item) {
         // 写入 MySQL
         gptHistoryService.pushChatItem(source(), user, item);
 
@@ -75,10 +74,10 @@ public abstract class AbstractGptService implements GptService {
      *
      * @return
      */
-    public ChatRecordsVo getChatHistory(Long user, AISourceEnum source) {
-        List<ChatItemVo> chats = RedisClient.lRange(ChatConstants.getAiHistoryRecordsKey(source(), user), 0, 50, ChatItemVo.class);
-        chats.add(0, new ChatItemVo().initAnswer("开始你的AI之旅吧!"));
-        ChatRecordsVo vo = new ChatRecordsVo();
+    public ChatRecordsVO getChatHistory(Long user, AISourceEnum source) {
+        List<ChatItemVO> chats = RedisClient.lRange(ChatConstants.getAiHistoryRecordsKey(source(), user), 0, 50, ChatItemVO.class);
+        chats.add(0, new ChatItemVO().initAnswer("开始你的AI之旅吧!"));
+        ChatRecordsVO vo = new ChatRecordsVO();
         vo.setMaxCnt(getMaxQaCnt(user));
         vo.setUsedCnt(queryUserdCnt(user));
         vo.setSource(source());
@@ -94,9 +93,9 @@ public abstract class AbstractGptService implements GptService {
      * @return 返回的结果
      */
     @Override
-    public ChatRecordsVo chat(Long user, String question) {
+    public ChatRecordsVO chat(Long user, String question) {
         // 构建提问、返回的实体类，计算使用次数，最大次数
-        ChatRecordsVo res = initResVo(user, question);
+        ChatRecordsVO res = initResVo(user, question);
         if (!res.hasQaCnt()) {
             return res;
         }
@@ -116,8 +115,8 @@ public abstract class AbstractGptService implements GptService {
      * @return 同步直接返回的结果
      */
     @Override
-    public ChatRecordsVo chat(Long user, String question, Consumer<ChatRecordsVo> consumer) {
-        ChatRecordsVo res = initResVo(user, question);
+    public ChatRecordsVO chat(Long user, String question, Consumer<ChatRecordsVO> consumer) {
+        ChatRecordsVO res = initResVo(user, question);
         if (!res.hasQaCnt()) {
             return res;
         }
@@ -129,15 +128,15 @@ public abstract class AbstractGptService implements GptService {
     }
 
 
-    private ChatRecordsVo initResVo(Long user, String question) {
-        ChatRecordsVo res = new ChatRecordsVo();
+    private ChatRecordsVO initResVo(Long user, String question) {
+        ChatRecordsVO res = new ChatRecordsVO();
         res.setSource(source());
         int maxCnt = getMaxQaCnt(user);
         int usedCnt = queryUserdCnt(user);
         res.setMaxCnt(maxCnt);
         res.setUsedCnt(usedCnt);
 
-        ChatItemVo item = new ChatItemVo().initQuestion(question);
+        ChatItemVO item = new ChatItemVO().initQuestion(question);
         if (!res.hasQaCnt()) {
             // 次数已经使用完毕
             item.initAnswer(ChatConstants.TOKEN_OVER);
@@ -146,8 +145,8 @@ public abstract class AbstractGptService implements GptService {
         return res;
     }
 
-    protected AiChatStatEnum answer(Long user, ChatRecordsVo res) {
-        ChatItemVo itemVo = res.getRecords().get(0);
+    protected AiChatStatEnum answer(Long user, ChatRecordsVO res) {
+        ChatItemVO itemVo = res.getRecords().get(0);
         AiChatStatEnum ans;
 //        if (sensitiveService.contains(itemVo.getQuestion())) {
         if (false){
@@ -172,8 +171,8 @@ public abstract class AbstractGptService implements GptService {
      * @return 同步直接返回的结果
      */
     @Override
-    public ChatRecordsVo asyncChat(Long user, String question, Consumer<ChatRecordsVo> consumer) {
-        ChatRecordsVo res = initResVo(user, question);
+    public ChatRecordsVO asyncChat(Long user, String question, Consumer<ChatRecordsVO> consumer) {
+        ChatRecordsVO res = initResVo(user, question);
         if (!res.hasQaCnt()) {
             // 次数使用完毕
             consumer.accept(res);
@@ -185,7 +184,7 @@ public abstract class AbstractGptService implements GptService {
             res.getRecords().get(0).initAnswer(ChatConstants.SENSITIVE_QUESTION);
             consumer.accept(res);
         } else {
-            final ChatRecordsVo newRes = res.clone();
+            final ChatRecordsVO newRes = res.clone();
             AiChatStatEnum needReturn = doAsyncAnswer(user, newRes, (ans, vo) -> {
                 if (ans == AiChatStatEnum.END) {
                     // 只有最后一个会话，即ai的回答结束，才需要进行持久化，并计数
@@ -200,7 +199,7 @@ public abstract class AbstractGptService implements GptService {
 
             if (needReturn.needResponse()) {
                 // 异步响应时，为了避免长时间的等待，这里直接响应用户的提问，返回一个稍等得提示文案
-                ChatItemVo nowItem = res.getRecords().get(0);
+                ChatItemVO nowItem = res.getRecords().get(0);
                 nowItem.initAnswer(ChatConstants.ASYNC_CHAT_TIP);
                 consumer.accept(res);
             }
@@ -217,7 +216,7 @@ public abstract class AbstractGptService implements GptService {
      * @param consumer 具体将 response 写回前端的实现策略
      * @return 返回的会话状态，控制是否需要将结果直接返回给前端
      */
-    public abstract AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo response, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer);
+    public abstract AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVO response, BiConsumer<AiChatStatEnum, ChatRecordsVO> consumer);
 
 
     /**
@@ -227,7 +226,7 @@ public abstract class AbstractGptService implements GptService {
      * @param chat
      * @return true 表示正确回答了； false 表示回答出现异常
      */
-    public abstract AiChatStatEnum doAnswer(Long user, ChatItemVo chat);
+    public abstract AiChatStatEnum doAnswer(Long user, ChatItemVO chat);
 
     /**
      * 查询当前用户最多可提问的次数（给所有用户默认设置50次访问）
@@ -245,7 +244,7 @@ public abstract class AbstractGptService implements GptService {
      * @param user
      * @param response
      */
-    protected void processAfterSuccessedAnswered(Long user, ChatRecordsVo response) {
+    protected void processAfterSuccessedAnswered(Long user, ChatRecordsVO response) {
         // 回答成功，保存聊天记录，剩余次数-1
         response.setUsedCnt(incrCnt(user).intValue());
         recordChatItem(user, response.getRecords().get(0));

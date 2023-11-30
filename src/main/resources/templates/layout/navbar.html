@@ -122,6 +122,9 @@
                     </div>
                   </div>
                 </div>
+                <a class="clickable" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">
+                  没有账号，点击注册
+                </a>
               </div>
             </div>
           </div>
@@ -146,6 +149,54 @@
       </div>
     </div>
   </div>
+  <!-- 绑定星球用户 -->
+  <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">注册专属于你的账号，畅享 GPT VIP 尊享服务！</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="auth-body">
+            <div class="register-main">
+              <!-- 分为上下两部分，下面是其他登录比如说 GitHub、验证码 -->
+              <div class="panel">
+                <h1 class="title">
+                  输入需要注册的账号和密码
+                </h1>
+                <form id="register-form">
+                  <div class="form-group">
+                    <input type="text"
+                           placeholder="尽量使用邮箱注册，别自己忘了自己账号哦~"
+                           class="form-control form-control-sm"
+                           required
+                           id="starNumber"
+                           autocomplete="off">
+                  </div>
+<!--                  <div class="form-group">-->
+<!--                    <input type="text"-->
+<!--                           placeholder="密码，你自己能记住的"-->
+<!--                           class="form-control form-control-sm"-->
+<!--                           id="registerUser" required>-->
+<!--                  </div>-->
+                  <div class="form-group">
+                    <input type="password" placeholder="密码，你自己能记得住的" class="form-control form-control-sm" id="registerPassword" required>
+                  </div>
+                  <!-- 绑定过会直接登录 -->
+                  <button type="submit"
+                          class="btn btn-primary btn-block btn-sm"
+                          th:text="注册后登录">绑定/绑定后登录</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   <script src="/js/mock.js"></script>
   <script th:inline="javascript">
     // 是否自动刷新验证码
@@ -189,19 +240,18 @@
       event.preventDefault();
 
       // 获取用户名和密码，没有定义 ID
-      const registerUser = $('#registerUser').val();
-      const starNumber = $("#starNumber").val() | '00000';
+      // const registerUser = $('#registerUser').val();
+      //账号
+      const starNumber = $("#starNumber").val();
+      //密码
       const password = $("#registerPassword").val();
-      const invitationCode = $("#invitationCode").val();
 
       $.ajax({
-        url: "/login/register",
+        url: "/user/create",
         type: "POST",
         data: {
-          username: registerUser,
-          starNumber: starNumber.toString().padStart(5, '0'), // "00001",
+          username: starNumber,
           password: password,
-          invitationCode: invitationCode
         },
         success: function(response) {
           console.log(response);

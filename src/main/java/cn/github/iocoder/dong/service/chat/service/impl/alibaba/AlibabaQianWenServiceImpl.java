@@ -1,7 +1,7 @@
 package cn.github.iocoder.dong.service.chat.service.impl.alibaba;
 
-import cn.github.iocoder.dong.controller.vo.ChatItemVo;
-import cn.github.iocoder.dong.controller.vo.ChatRecordsVo;
+import cn.github.iocoder.dong.controller.vo.ChatItemVO;
+import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.model.enums.AiChatStatEnum;
 import cn.github.iocoder.dong.model.enums.ChatAnswerTypeEnum;
@@ -37,8 +37,8 @@ public class AlibabaQianWenServiceImpl extends AbstractGptService {
      * @return 返回的会话状态，控制是否需要将结果直接返回给前端
      */
     @Override
-    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVo chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVo> consumer) {
-        ChatItemVo item = chatRes.getRecords().get(0);
+    public AiChatStatEnum doAsyncAnswer(Long user, ChatRecordsVO chatRes, BiConsumer<AiChatStatEnum, ChatRecordsVO> consumer) {
+        ChatItemVO item = chatRes.getRecords().get(0);
         Conversation conversation = new Conversation();
         Constants.apiKey = key;
         ConversationParam param = ConversationParam
@@ -82,7 +82,7 @@ public class AlibabaQianWenServiceImpl extends AbstractGptService {
      * @return true 表示正确回答了； false 表示回答出现异常
      */
     @Override
-    public AiChatStatEnum doAnswer(Long user, ChatItemVo chat) {
+    public AiChatStatEnum doAnswer(Long user, ChatItemVO chat) {
         if (directReturn(chat)){
             return AiChatStatEnum.END;
         }
@@ -109,7 +109,7 @@ public class AlibabaQianWenServiceImpl extends AbstractGptService {
         return true;
     }
 
-    public boolean directReturn( ChatItemVo chat) {
+    public boolean directReturn( ChatItemVO chat) {
         Constants.apiKey = key;
         Conversation conversation = new Conversation();
         String prompt = chat.getQuestion();

@@ -1,6 +1,6 @@
 package cn.github.iocoder.dong.service.history.service;
 
-import cn.github.iocoder.dong.controller.vo.ChatItemVo;
+import cn.github.iocoder.dong.controller.vo.ChatItemVO;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 
 public interface GptHistoryService {
@@ -12,5 +12,5 @@ public interface GptHistoryService {
      * @param user
      * @param item
      */
-    void pushChatItem(AISourceEnum source, Long user, ChatItemVo item);
+    void pushChatItem(AISourceEnum source, Long user, ChatItemVO item);
 }
