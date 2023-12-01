@@ -1,5 +1,6 @@
 package cn.github.iocoder.dong.service.user.service.impl;
 
+import cn.github.iocoder.dong.controller.vo.UserInfoVO;
 import cn.github.iocoder.dong.core.exception.ExceptionUtil;
 import cn.github.iocoder.dong.core.helper.Ip2regionSearcher;
 import cn.github.iocoder.dong.core.helper.UserPwdEncoder;
@@ -8,15 +9,20 @@ import cn.github.iocoder.dong.core.helper.dto.IpInfoDTO;
 import cn.github.iocoder.dong.core.utils.IpUtil;
 import cn.github.iocoder.dong.core.utils.ServletUtils;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
+import cn.github.iocoder.dong.model.convert.UserConvert;
 import cn.github.iocoder.dong.model.enums.LoginResultEnum;
 import cn.github.iocoder.dong.model.enums.StatusEnum;
 import cn.github.iocoder.dong.model.enums.YesOrNoEnum;
 import cn.github.iocoder.dong.service.user.repository.entity.LoginLogDO;
 import cn.github.iocoder.dong.service.user.repository.entity.UserDO;
+import cn.github.iocoder.dong.service.user.repository.entity.UserInfoDO;
 import cn.github.iocoder.dong.service.user.repository.mapper.LoginLogMapper;
+import cn.github.iocoder.dong.service.user.repository.mapper.UserInfoMapper;
 import cn.github.iocoder.dong.service.user.repository.mapper.UserMapper;
 import cn.github.iocoder.dong.service.user.service.UserService;
 import cn.hutool.core.util.ObjectUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private UserInfoMapper userInfoMapper;
 
     @Resource
     private LoginLogMapper loginLogMapper;
@@ -106,6 +115,11 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(new UserDO().setPassword(s)
                 .setDeleted(YesOrNoEnum.NO.getCode())
                 .setUsername(username));
+        UserDO userByName = userMapper.getUserByName(username);
+        userInfoMapper.insert(new UserInfoDO().setPhoto("https://imgs.hhui.top/forum/avatar/0066.png")
+                .setUserName(username)
+                .setUserId(userByName.getId())
+                .setDeleted(YesOrNoEnum.NO.getCode()));
         return "注册成功";
     }
 
@@ -117,5 +131,60 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout(String session) {
         userSessionHelper.removeSession(session);
+    }
+
+    @Override
+    public UserInfoVO queryUserInfo(Long userId,HttpServletRequest httpServletRequest) {
+        UserInfoVO userInfoVO = new UserInfoVO();
+        if (userId==null){
+            throw ExceptionUtil.of(StatusEnum.ILLEGAL_ARGUMENTS, "userId");
+        }
+        //只能查询本人的个人信息
+        if (!ReqInfoContext.getReqInfo().getUserId().equals(userId)){
+            userId = ReqInfoContext.getReqInfo().getUserId();
+        }
+        UserInfoDO userInfoDO = userInfoMapper.getUserId(userId);
+        if (userInfoDO==null){
+            return null;
+        }
+        BeanUtils.copyProperties(userInfoDO, userInfoVO);
+        // 用户资料完整度
+        int cnt = 0;
+        if (StringUtils.isNotBlank(userInfoDO.getCompany())) {
+            ++cnt;
+        }
+        if (StringUtils.isNotBlank(userInfoDO.getPosition())) {
+            ++cnt;
+        }
+        if (StringUtils.isNotBlank(userInfoDO.getProfile())) {
+            ++cnt;
+        }
+        userInfoVO.setInfoPercent(cnt * 100 / 3);
+        // 加入天数
+        int joinDayCount = (int) ((System.currentTimeMillis() - userInfoDO.getCreateTime()
+                .getTime()) / (1000 * 3600 * 24));
+        userInfoVO.setJoinDayCount(Math.max(1, joinDayCount));
+        userInfoVO.setRegion(ip2regionSearcher.search(IpUtil.getClientIp(httpServletRequest)).getAddress());
+        return userInfoVO;
+    }
+
+    @Override
+    public void saveUserInfo(UserInfoVO userInfoVO) {
+        UserInfoDO userInfoDO = UserConvert.INSTANCE.convert(userInfoVO);
+        if (userInfoVO.getUserId()==null){
+            throw ExceptionUtil.of(StatusEnum.ILLEGAL_ARGUMENTS,"userId");
+        }
+        UserInfoDO userId = userInfoMapper.getUserId(userInfoVO.getUserId());
+        if (!ObjectUtil.isNotNull(userId)){
+            throw ExceptionUtil.of(StatusEnum.USER_NOT_EXISTS,"信息不存在");
+        }
+        userInfoDO.setId(userId.getId());
+        if (StringUtils.isEmpty(userInfoDO.getUserName())){
+            userInfoDO.setUserName(null);
+        }
+        if (StringUtils.isEmpty(userInfoDO.getPhoto())){
+            userInfoDO.setPhoto(null);
+        }
+        userInfoMapper.updateById(userInfoDO);
     }
 }

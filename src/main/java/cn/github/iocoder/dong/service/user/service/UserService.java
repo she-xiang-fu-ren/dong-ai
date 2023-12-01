@@ -1,5 +1,6 @@
 package cn.github.iocoder.dong.service.user.service;
 
+import cn.github.iocoder.dong.controller.vo.UserInfoVO;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,4 +34,13 @@ public interface UserService {
      * @param session
      */
     void logout(String session);
+
+    /**
+     * 查询用户信息
+     * @param userId
+     * @return
+     */
+    UserInfoVO queryUserInfo(Long userId,HttpServletRequest httpServletRequest);
+
+    void saveUserInfo(UserInfoVO userInfoVO);
 }

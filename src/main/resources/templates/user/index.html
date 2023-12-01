@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="layout/header :: head(~{::title}, ~{}, ~{})">
+    <title th:text="">技术派</title>
+  </div>
+
+  <link href="/css/user.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+  <body id="body">
+    <!-- 导航栏 -->
+    <div th:replace="layout/navbar :: navbar"></div>
+
+    <!-- 正文内容 -->
+    <div class="user" style="margin-top: 60px ">
+      <div th:replace="user/info/index :: user_info(${vo})"></div>
+      <div class="boot" style="margin: 0 auto;width: 1200px;display: flex;flex-direction: column;margin-bottom: 20px;min-height: 60%;"></div>
+      <div th:replace="layout/footer :: footer"></div>
+
+      <!--  个人用户修改弹窗  -->
+      <div th:replace="user/info/edit"></div>
+    </div>
+  </body>
+  <script th:inline="javascript">
+    const isLogin = [[${global.isLogin}]]
+
+    // 页面加载完成后
+    $(function () {
+      if (isLogin) {
+      } else {
+        console.log("请先登录");
+        window.location.href = "https://www.example.com";
+      }
+    });
+  </script>
+</html>

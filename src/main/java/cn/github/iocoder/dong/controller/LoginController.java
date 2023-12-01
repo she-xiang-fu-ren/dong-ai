@@ -44,10 +44,7 @@ public class LoginController {
         // 移除cookie
         response.addCookie(SessionUtil.delCookie("f-session"));
         // 重定向到当前页面
-        String referer = request.getHeader("Referer");
-        if (org.apache.commons.lang3.StringUtils.isBlank(referer)) {
-            referer = "/";
-        }
+        String referer = "/";
         response.sendRedirect(referer);
         return ResVo.ok(true);
     }
