@@ -28,7 +28,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Configuration
 @EnableWebSocketMessageBroker // 开启websocket代理
-public class WsChatConfig implements WebSocketMessageBrokerConfigurer {
+public class WsChatConfiguration implements WebSocketMessageBrokerConfigurer {
 
     @Resource
     private RabbitMqProperties rabbitMqProperties;

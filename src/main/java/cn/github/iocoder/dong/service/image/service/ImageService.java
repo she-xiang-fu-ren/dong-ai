@@ -1,4 +1,4 @@
-package cn.github.iocoder.dong.service.user.service;
+package cn.github.iocoder.dong.service.image.service;
 
 import javax.servlet.http.HttpServletRequest;
 

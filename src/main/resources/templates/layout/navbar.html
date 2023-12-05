@@ -42,7 +42,7 @@
               <img
                         style="border-radius: 50%"
                       class="nav-login-img"
-                      th:src="@{/img/123.jpg}"
+                      th:src="${global.user.photoUrl}"
                       src="https://static.developers.pub/static/img/logo.b2ff606.jpeg"
                       alt=""
                       loading="lazy"
@@ -60,7 +60,7 @@
                   >
                     个人主页
                   </a>
-                  <a id="logoutBtn" href="/logout" class="dropdown-item">登出</a>
+                  <a id="logoutBtn" href="/login/logout" class="dropdown-item">登出</a>
                 </div>
               </div>
             </div>

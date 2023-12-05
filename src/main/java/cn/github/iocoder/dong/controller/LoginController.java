@@ -18,12 +18,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping
+@RequestMapping("/login")
 public class LoginController {
     @Resource
     private UserService userService;
 
-    @PostMapping("/login/username")
+    @PostMapping("/username")
     public ResVo<Boolean> loginUsername(@RequestParam(name = "username") String username,
                                        @RequestParam(name = "password") String password,
                                        HttpServletResponse response,HttpServletRequest request){

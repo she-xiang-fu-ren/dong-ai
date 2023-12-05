@@ -43,6 +43,11 @@ public class ReqRecordFilter implements Filter {
                 }
                 reqInfo.setPath(url);
             }
+            //放行css、js、img等文件。不然每次都进过滤器，
+            if(reqInfo.getPath().contains("/css/")||reqInfo.getPath().contains("/js/")||reqInfo.getPath().contains("/img/")){
+                filterChain.doFilter(servletRequest,servletResponse);
+                return;
+            }
             reqInfo.setUserAgent(request.getHeader("User-Agent"));
             Optional.ofNullable(SessionUtil.findCookieByName(request, "f-session"))
                     .ifPresent(cookie -> userService.initLoginUser(cookie.getValue(), reqInfo));

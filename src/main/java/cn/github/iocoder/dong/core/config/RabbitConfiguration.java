@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @Configuration
-public class RabbitConfig {
+public class RabbitConfiguration {
 
     @Resource
     private RabbitMqProperties rabbitMqProperties;

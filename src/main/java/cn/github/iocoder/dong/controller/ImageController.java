@@ -3,7 +3,7 @@ package cn.github.iocoder.dong.controller;
 import cn.github.iocoder.dong.controller.vo.ImageVo;
 import cn.github.iocoder.dong.model.api.ResVo;
 import cn.github.iocoder.dong.model.enums.StatusEnum;
-import cn.github.iocoder.dong.service.user.service.ImageService;
+import cn.github.iocoder.dong.service.image.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

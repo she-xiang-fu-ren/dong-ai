@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
                 .setDeleted(YesOrNoEnum.NO.getCode())
                 .setUsername(username));
         UserDO userByName = userMapper.getUserByName(username);
-        userInfoMapper.insert(new UserInfoDO().setPhoto("https://imgs.hhui.top/forum/avatar/0066.png")
+        userInfoMapper.insert(new UserInfoDO().setPhoto("http://175.178.3.46:9000/dong/123.jpg")
                 .setUserName(username)
                 .setUserId(userByName.getId())
                 .setDeleted(YesOrNoEnum.NO.getCode()));

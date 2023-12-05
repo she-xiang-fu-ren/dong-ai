@@ -48,7 +48,7 @@ public class AlibabaImageTest {
 
     public static void main(String[] args){
         try{
-            Constants.apiKey = "sk-e3c60119978d4a8885b451dcc48d22b5";
+            Constants.apiKey = "";
             basicCall();
             //listTask();
         }catch(ApiException|NoApiKeyException e){

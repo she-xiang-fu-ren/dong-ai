@@ -34,7 +34,7 @@ public class AlibabaMessageTest {
         Message userMsg = Message.builder().role(Role.USER.getValue()).content("如何做西红柿鸡蛋？").build();
         msgManager.add(systemMsg);
         msgManager.add(userMsg);
-        Constants.apiKey = "sk-e3c60119978d4a8885b451dcc48d22b5";
+        Constants.apiKey = "";
         QwenParam param =
                 QwenParam.builder().model(Generation.Models.QWEN_MAX).messages(msgManager.get())
                         .resultFormat(QwenParam.ResultFormat.MESSAGE)
@@ -54,7 +54,7 @@ public class AlibabaMessageTest {
         Message userMsg = Message.builder().role(Role.USER.getValue()).content("你好，周末去哪里玩？").build();
         msgManager.add(systemMsg);
         msgManager.add(userMsg);
-        Constants.apiKey = "sk-e3c60119978d4a8885b451dcc48d22b5";
+        Constants.apiKey = "";
         QwenParam param =
                 QwenParam.builder().model(Generation.Models.QWEN_PLUS).messages(msgManager.get())
                         .resultFormat(QwenParam.ResultFormat.MESSAGE)
@@ -163,14 +163,25 @@ public class AlibabaMessageTest {
         });
         semaphore.acquire();
     }
+    public static void quickStart() throws ApiException, Exception {
+        Conversation conversation = new Conversation();
+        String prompt = "用萝卜、土豆、茄子做饭，给我个菜谱。";
+        ConversationParam param = ConversationParam
+                .builder()
+                .model(Conversation.Models.QWEN_TURBO)
+                .prompt(prompt)
+                .build();
+        ConversationResult result = conversation.call(param);
+        System.out.println(JsonUtils.toJson(result));
+    }
+
 
 
     public static void main(String[] args){
         try {
-            Constants.apiKey = "sk-e3c60119978d4a8885b451dcc48d22b5";
-            testStreamCall();
-            qwenQuickStartCallback();
-        } catch (ApiException | NoApiKeyException |InputRequiredException |InterruptedException e) {
+            Constants.apiKey = "";
+            callWithMessage();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         System.exit(0);

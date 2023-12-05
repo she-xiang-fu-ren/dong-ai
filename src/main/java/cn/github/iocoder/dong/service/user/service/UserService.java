@@ -1,7 +1,6 @@
 package cn.github.iocoder.dong.service.user.service;
 
 import cn.github.iocoder.dong.controller.vo.UserInfoVO;
-import cn.github.iocoder.dong.model.context.ReqInfoContext;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,5 +41,9 @@ public interface UserService {
      */
     UserInfoVO queryUserInfo(Long userId,HttpServletRequest httpServletRequest);
 
+    /**
+     * 上传图片
+     * @param userInfoVO
+     */
     void saveUserInfo(UserInfoVO userInfoVO);
 }

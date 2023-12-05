@@ -1,13 +1,13 @@
 package cn.github.iocoder.dong.service.global;
 
-import cn.github.iocoder.dong.core.helper.UserPwdEncoder;
 import cn.github.iocoder.dong.core.helper.UserSessionHelper;
-import cn.github.iocoder.dong.core.listener.UserCountListener;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
 import cn.github.iocoder.dong.model.context.dto.UserDTO;
 import cn.github.iocoder.dong.model.convert.UserConvert;
 import cn.github.iocoder.dong.service.global.vo.GlobalVo;
 import cn.github.iocoder.dong.service.user.repository.entity.UserDO;
+import cn.github.iocoder.dong.service.user.repository.entity.UserInfoDO;
+import cn.github.iocoder.dong.service.user.repository.mapper.UserInfoMapper;
 import cn.github.iocoder.dong.service.user.repository.mapper.UserMapper;
 import cn.github.iocoder.dong.service.user.service.UserStatisticService;
 import cn.hutool.core.util.ObjectUtil;
@@ -26,7 +26,8 @@ public class GlobalInitService {
 
     @Resource
     private UserMapper userMapper;
-
+    @Resource
+    private UserInfoMapper userInfoMapper;
     @Resource
     private UserSessionHelper userSessionHelper;
 
@@ -38,7 +39,10 @@ public class GlobalInitService {
         vo.setOnlineCnt(userStatisticService.getOnlineUserCnt());
         try {
             if (ReqInfoContext.getReqInfo() != null && ReqInfoContext.getReqInfo().getUserId()!=null){
-                vo.setUser(ReqInfoContext.getReqInfo().getUser());
+                UserInfoDO userInfoDO = userInfoMapper.getUserId(ReqInfoContext.getReqInfo().getUserId());
+                UserDTO user = ReqInfoContext.getReqInfo().getUser();
+                user.setPhotoUrl(userInfoDO.getPhoto());
+                vo.setUser(user);
                 vo.setIsLogin(true);
             }else {
                 vo.setIsLogin(false);
