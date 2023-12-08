@@ -1,17 +1,22 @@
 server:
   port: 8080
+  servlet:
+    session:
+      timeout: 5m # 设置session的有效期为五分钟
 
 spring:
   datasource: # MySQL的配置
     url: jdbc:mysql://127.0.0.1:3306/gpt_ai?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+#    url: jdbc:mysql://192.168.200.201:13306/gpt_ai?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis: # redis的配置
     host: 127.0.0.1
+#    host: 192.168.200.201
     port: 6379
     database: 1
-    password:
+    password: chen
   thymeleaf: #thymeleaf模板的配置
     prefix: classpath:/templates/
     suffix: .html
@@ -26,6 +31,7 @@ mybatis-plus:
 
 dong:
   mq: #rabbitmq
+#    host: 192.168.200.201 #ip
     host: 127.0.0.1 #ip
     port: 5672 #端口
     relay_port: 61613 #stomp端口
@@ -42,13 +48,37 @@ dong:
   security:
     salt: tech_π # 密码加盐, 更安全的做法是每个用户的密码使用独立的盐，并将其保存在用户表中
     salt-index: 3 # 盐插入的位置
+  image:
+    type: ali
+#    minio:
+#      endpoint: http://127.0.0.1:9000
+#      accessKey: admin
+#      secretKey: admin123
+#      bucket_name: dong
+    oss:
+      endpoint: http://oss-cn-wuhan-lr.aliyuncs.com #上传地址
+      accessKey:
+      secretKey:
+      bucket_name: dong-2024 #桶名称
+      prefix: dong-ai/ #上传路径
+      host: https://dong-2024.oss-cn-wuhan-lr.aliyuncs.com/ #访问路径
+  sensitive: # 敏感词校验相关配置
+    enable: true
+    deny: # 自定义的敏感词，英文逗号分割
+    allow: # 自定义的非敏感词，英文逗号分割
+
+
+# ip2region
+ip2region:
+  enabled: true
+  dbfile: data/ip2region.xdb
 
 gpt-ai:
   alibaba:
-    key: xxx
+    key: #key
   xun_fei:
-    app_id: xxx
-    client_key: xxx
-    client_secret: xxx
+    app_id:
+    client_key:
+    client_secret:
 
 
