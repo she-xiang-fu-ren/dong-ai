@@ -75,14 +75,6 @@ public class RabbitConfiguration {
            log.info("ConfirmCallback:     " + "原因：" + cause);
         });
 
-        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
-           log.info("ReturnCallback:     " + "消息：" + message);
-           log.info("ReturnCallback:     " + "回应码：" + replyCode);
-           log.info("ReturnCallback:     " + "回应信息：" + replyText);
-           log.info("ReturnCallback:     " + "交换机：" + exchange);
-           log.info("ReturnCallback:     " + "路由键：" + routingKey);
-        });
-
         return rabbitTemplate;
     }
 

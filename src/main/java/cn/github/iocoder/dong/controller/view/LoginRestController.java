@@ -1,6 +1,8 @@
 package cn.github.iocoder.dong.controller.view;
 
 import cn.github.iocoder.dong.controller.vo.UserInfoVO;
+import cn.github.iocoder.dong.core.permission.Permission;
+import cn.github.iocoder.dong.core.permission.UserRole;
 import cn.github.iocoder.dong.service.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ public class LoginRestController {
         return "home/index";
     }
 
+    @Permission(role = UserRole.LOGIN)
     @GetMapping(path = "/user/home")
     public String getUserHome(@RequestParam(name = "userId") Long userId, Model model, HttpServletRequest httpServletRequest) {
         UserInfoVO userInfoVO =  userService.queryUserInfo(userId,httpServletRequest);

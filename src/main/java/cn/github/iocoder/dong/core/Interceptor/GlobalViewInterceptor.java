@@ -1,5 +1,7 @@
 package cn.github.iocoder.dong.core.Interceptor;
 
+import cn.github.iocoder.dong.core.permission.Permission;
+import cn.github.iocoder.dong.core.permission.UserRole;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
 import cn.github.iocoder.dong.service.global.GlobalInitService;
 import cn.hutool.core.util.ObjectUtil;
@@ -7,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,7 +36,24 @@ public class GlobalViewInterceptor implements AsyncHandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        System.out.println("zzzz");
+        if (handler instanceof HandlerMethod){
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            //从请求的方法中获取注解
+            Permission permission = handlerMethod.getMethod().getAnnotation(Permission.class);
+            //判断是否有加注解
+            if (permission == null){
+                //如果没有，去这个方法的bean去拿注解（控制层）
+                permission = handlerMethod.getBeanType().getAnnotation(Permission.class);
+            }
+            if (permission == null || permission.role()== UserRole.ALL){
+                //说明不需要登录，放行
+                return true;
+            }
+            if (ReqInfoContext.getReqInfo() == null || ReqInfoContext.getReqInfo().getUserId() ==null){
+                response.sendRedirect("/");
+                return false;
+            }
+        }
         return true;
     }
 

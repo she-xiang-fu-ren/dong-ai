@@ -1,14 +1,16 @@
 package cn.github.iocoder.dong.service.chat.service;
 
-import cn.github.iocoder.dong.model.context.ChatConstants;
 import cn.github.iocoder.dong.controller.vo.ChatItemVO;
 import cn.github.iocoder.dong.controller.vo.ChatRecordsVO;
+import cn.github.iocoder.dong.core.handler.SensitiveServiceHandler;
+import cn.github.iocoder.dong.core.utils.RedisClient;
+import cn.github.iocoder.dong.model.context.ChatConstants;
 import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import cn.github.iocoder.dong.model.enums.AiChatStatEnum;
-import cn.github.iocoder.dong.core.utils.RedisClient;
 import cn.github.iocoder.dong.service.history.service.GptHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -22,6 +24,9 @@ import java.util.function.Consumer;
 @Slf4j
 @Service
 public abstract class AbstractGptService implements GptService {
+
+    @Resource
+    private SensitiveServiceHandler sensitiveServiceHandler;
 
     @Resource
     private GptHistoryService gptHistoryService;
@@ -148,9 +153,9 @@ public abstract class AbstractGptService implements GptService {
     protected AiChatStatEnum answer(Long user, ChatRecordsVO res) {
         ChatItemVO itemVo = res.getRecords().get(0);
         AiChatStatEnum ans;
-//        if (sensitiveService.contains(itemVo.getQuestion())) {
-        if (false){
-            itemVo.initAnswer(ChatConstants.SENSITIVE_QUESTION);
+        List<String> contains = sensitiveServiceHandler.contains(itemVo.getQuestion());
+        if (!CollectionUtils.isEmpty(contains)) {
+            itemVo.initAnswer(String.format(ChatConstants.SENSITIVE_QUESTION, contains));
             ans = AiChatStatEnum.ERROR;
         } else {
             ans = doAnswer(user, itemVo);
@@ -178,10 +183,10 @@ public abstract class AbstractGptService implements GptService {
             consumer.accept(res);
             return res;
         }
-        if (false){
-//        if (sensitiveService.contains(res.getRecords().get(0).getQuestion())) {
+        List<String> contains = sensitiveServiceHandler.contains(res.getRecords().get(0).getQuestion());
+        if (!CollectionUtils.isEmpty(contains)) {
             // 包含敏感词的提问，直接返回异常
-            res.getRecords().get(0).initAnswer(ChatConstants.SENSITIVE_QUESTION);
+            res.getRecords().get(0).initAnswer(String.format(ChatConstants.SENSITIVE_QUESTION, contains));
             consumer.accept(res);
         } else {
             final ChatRecordsVO newRes = res.clone();
@@ -204,7 +209,7 @@ public abstract class AbstractGptService implements GptService {
                 consumer.accept(res);
             }
         }
-        return null;
+        return res;
     }
 
 

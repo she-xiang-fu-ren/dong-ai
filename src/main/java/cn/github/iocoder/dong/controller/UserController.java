@@ -2,6 +2,8 @@ package cn.github.iocoder.dong.controller;
 
 import cn.github.iocoder.dong.controller.vo.UserInfoVO;
 import cn.github.iocoder.dong.controller.vo.UserVO;
+import cn.github.iocoder.dong.core.permission.Permission;
+import cn.github.iocoder.dong.core.permission.UserRole;
 import cn.github.iocoder.dong.model.api.ResVo;
 import cn.github.iocoder.dong.model.context.ReqInfoContext;
 import cn.github.iocoder.dong.model.enums.StatusEnum;
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/saveUserInfo")
+    @Permission(role = UserRole.LOGIN)
     public ResVo<Boolean> saveUserInfo(@RequestBody UserInfoVO userInfoVO){
         if (userInfoVO.getUserId() == null || !Objects.equals(userInfoVO.getUserId(), ReqInfoContext.getReqInfo().getUserId())) {
             // 不能修改其他用户的信息

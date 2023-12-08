@@ -43,24 +43,24 @@ public class WsChatConfiguration implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // 开启一个简单的基于内存的消息代理，前缀是/user的将消息会转发给消息代理 broker
         // 然后再由消息代理，将消息广播给当前连接的客户端
-        config.enableSimpleBroker("/chat");
+        config.setUserDestinationPrefix("/user");
 
         // 表示配置一个或多个前缀，通过这些前缀过滤出需要被注解方法处理的消息。
         // 例如，前缀为 /app 的 destination 可以通过@MessageMapping注解的方法处理，
         // 而其他 destination （例如 /topic /queue）将被直接交给 broker 处理
         config.setApplicationDestinationPrefixes("/app");
         //启用一个线程代理-->rabbitmq实现stomp协议
-        config.enableStompBrokerRelay("/topic")
-                .setAutoStartup(true)
-                .setRelayHost(rabbitMqProperties.getHost())
-                .setRelayPort(rabbitMqProperties.getRelayPort())
-                .setVirtualHost(rabbitMqProperties.getVirtualHost())
-                .setClientLogin(rabbitMqProperties.getUsername())
-                .setClientPasscode(rabbitMqProperties.getPassword())
-                .setSystemLogin(rabbitMqProperties.getUsername())
-                .setSystemPasscode(rabbitMqProperties.getPassword())
-                .setSystemHeartbeatReceiveInterval(5000)
-                .setSystemHeartbeatSendInterval(4000);
+//        config.enableStompBrokerRelay("/topic/","/queue/","exchange")
+//                .setAutoStartup(true)
+//                .setRelayHost(rabbitMqProperties.getHost())
+//                .setRelayPort(rabbitMqProperties.getRelayPort())
+//                .setVirtualHost(rabbitMqProperties.getVirtualHost())
+//                .setClientLogin(rabbitMqProperties.getUsername())
+//                .setClientPasscode(rabbitMqProperties.getPassword())
+//                .setSystemLogin(rabbitMqProperties.getUsername())
+//                .setSystemPasscode(rabbitMqProperties.getPassword())
+//                .setSystemHeartbeatReceiveInterval(5000)
+//                .setSystemHeartbeatSendInterval(4000);
     }
 
 

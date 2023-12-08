@@ -122,8 +122,11 @@
                     </div>
                   </div>
                 </div>
-                <a class="clickable" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">
-                  没有账号，点击注册
+                <a class="clickable" data-toggle="modal" data-target="#registerModal"
+                   data-dismiss="modal" style="text-decoration: none; color: #ff6900; transition: color 0.3s;"
+                   onmouseover="this.style.color='#ff0000'; this.style.textDecoration='underline';"
+                   onmouseout="this.style.color='#ff6900'; this.style.textDecoration='none';">
+                    没有账号，点击注册
                 </a>
               </div>
             </div>
@@ -133,14 +136,12 @@
           <div class="agreement-box">
             <div class="mdnice-user-dialog-footer">
               <p>登录即同意
-                <a href="article/detail/141"
-                   target="_blank" rel="noopener noreferrer">
+                <span style="color: #ff6900">
                   用户协议
-                </a> 和
-                <a href="article/detail/142"
-                   target="_blank" rel="noopener noreferrer">
+                </span> 和
+                <span style="color: #ff6900">
                   隐私政策
-                </a>
+                </span>
               </p>
             </div>
           </div>

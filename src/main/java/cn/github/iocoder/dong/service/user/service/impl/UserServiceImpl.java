@@ -140,9 +140,9 @@ public class UserServiceImpl implements UserService {
             throw ExceptionUtil.of(StatusEnum.ILLEGAL_ARGUMENTS, "userId");
         }
         //只能查询本人的个人信息
-        if (!ReqInfoContext.getReqInfo().getUserId().equals(userId)){
-            userId = ReqInfoContext.getReqInfo().getUserId();
-        }
+//        if (!ReqInfoContext.getReqInfo().getUserId().equals(userId)){
+//            userId = ReqInfoContext.getReqInfo().getUserId();
+//        }
         UserInfoDO userInfoDO = userInfoMapper.getUserId(userId);
         if (userInfoDO==null){
             return null;

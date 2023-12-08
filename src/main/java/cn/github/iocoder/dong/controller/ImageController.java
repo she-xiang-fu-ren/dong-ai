@@ -1,6 +1,8 @@
 package cn.github.iocoder.dong.controller;
 
 import cn.github.iocoder.dong.controller.vo.ImageVo;
+import cn.github.iocoder.dong.core.permission.Permission;
+import cn.github.iocoder.dong.core.permission.UserRole;
 import cn.github.iocoder.dong.model.api.ResVo;
 import cn.github.iocoder.dong.model.enums.StatusEnum;
 import cn.github.iocoder.dong.service.image.service.ImageService;
@@ -20,6 +22,7 @@ public class ImageController {
     private ImageService imageService;
 
     @RequestMapping(path = "upload")
+    @Permission(role = UserRole.LOGIN)
     public ResVo<ImageVo> upload(HttpServletRequest request) {
         ImageVo imageVo = new ImageVo();
         try {

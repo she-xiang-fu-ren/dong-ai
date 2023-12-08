@@ -38,6 +38,12 @@
     </parent>
 
     <dependencies>
+        <!--敏感词过滤-->
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>sensitive-word</artifactId>
+            <version>0.10.0</version>
+        </dependency>
         <!--获取IP归属-->
         <dependency>
             <groupId>org.lionsoul</groupId>
