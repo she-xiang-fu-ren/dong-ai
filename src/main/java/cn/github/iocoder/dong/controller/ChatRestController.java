@@ -1,11 +1,11 @@
 package cn.github.iocoder.dong.controller;
 
+import cn.github.iocoder.dong.core.config.properties.RabbitMqProperties;
 import cn.github.iocoder.dong.core.helper.WsAnswerHelper;
 import cn.github.iocoder.dong.core.helper.dto.RabbitMqDTO;
-import cn.github.iocoder.dong.core.config.properties.RabbitMqProperties;
-import cn.github.iocoder.dong.core.utils.JsonUtil;
+import cn.github.iocoder.dong.model.context.ReqInfoContext;
+import cn.github.iocoder.dong.model.enums.AISourceEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
@@ -25,11 +25,14 @@ import java.util.Map;
 @RestController
 public class ChatRestController {
 
-    @Resource
-    private RabbitTemplate rabbitTemplate;
+//    @Resource
+//    private RabbitTemplate rabbitTemplate;
 
-    @Resource
-    private RabbitMqProperties rabbitMqProperties;
+//    @Resource
+//    private RabbitMqProperties rabbitMqProperties;
+
+    @Autowired
+    private WsAnswerHelper answerHelper;
 
     /**
      * 接收用户发送的消息
@@ -46,11 +49,11 @@ public class ChatRestController {
     public void chat(String msg, @DestinationVariable("session") String session, @Header("simpSessionAttributes") Map<String, Object> attrs) {
         String aiType = (String) attrs.get(WsAnswerHelper.AI_SOURCE_PARAM);
         RabbitMqDTO rabbitMqDTO = new RabbitMqDTO(msg, session, aiType);
-        rabbitTemplate.convertAndSend(rabbitMqProperties.getMQ_EXCHANGE(),rabbitMqProperties.getMSG_TOPIC_KEY(), JsonUtil.toStr(rabbitMqDTO));
-//        answerHelper.execute(attrs, () -> {
-//            log.info("{} 用户开始了对话: {} - {}", ReqInfoContext.getReqInfo().getUserId(), aiType, msg);
-//            AISourceEnum source = aiType == null ? null : AISourceEnum.valueOf(aiType);
-//            answerHelper.sendMsgToUser(source, session, msg);
-//        });
+//        rabbitTemplate.convertAndSend(rabbitMqProperties.getMQ_EXCHANGE(),rabbitMqProperties.getMSG_TOPIC_KEY(), JsonUtil.toStr(rabbitMqDTO));
+        //异步执行
+        answerHelper.execute(attrs, () -> {
+            log.info("{} 用户开始了对话: {} - {}", ReqInfoContext.getReqInfo().getUserId(), aiType, msg);
+            answerHelper.sendMsgToUser(rabbitMqDTO);
+        });
     }
 }

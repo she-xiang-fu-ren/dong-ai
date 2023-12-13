@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * @author dong
  * @date 2023/11/16
@@ -59,5 +61,23 @@ public class WsAnswerHelper {
         // /user/username/chat/rsp，其中第二个参数 username 即为这里的第一个参数 session
         // username 也是AuthHandshakeHandler中配置的 Principal 用户识别标志
         simpMessagingTemplate.convertAndSendToUser(session, "/chat/rsp", response);
+    }
+
+    /**
+     * 异步执行
+     * @param attributes
+     * @param func
+     */
+    public void execute(Map<String, Object> attributes, Runnable func) {
+        try {
+            ReqInfoContext.ReqInfo reqInfo = (ReqInfoContext.ReqInfo) attributes.get("f-session");
+            ReqInfoContext.addReqInfo(reqInfo);
+
+            // 执行具体的业务逻辑
+            func.run();
+
+        } finally {
+            ReqInfoContext.clear();
+        }
     }
 }

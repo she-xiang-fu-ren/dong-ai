@@ -46,7 +46,7 @@ public class IpInfoDTO {
         regionSet.add(province);
         regionSet.add(city);
         regionSet.removeIf(Objects::isNull);
-        return StrUtil.join(StrUtil.EMPTY, regionSet);
+        return StrUtil.join("-", regionSet);
     }
 
     /**
